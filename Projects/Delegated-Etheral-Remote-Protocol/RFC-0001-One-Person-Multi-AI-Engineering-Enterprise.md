@@ -66,9 +66,11 @@ Use existing tools first. An eventual THOTH Node-RED / Python service, humorousl
 
 The canonical Git repository and raw evidence must not be overwritten by generated context. Google Drive is a derived review/distribution surface. A failed or delayed mirror cannot rewrite history.
 
-## 5. Cementic Memory pilot: can the collaborator keep up with changing foundations?
+## 5. Cementic Memory pilot: existing context versus newly supplied evidence
 
-**Purpose:** Evaluate whether versioned project documents and personas help Gemini correctly interpret changing facts across sessions, without hallucinating events that were never recorded.
+**Purpose:** Gemini already has exposure to the user's projects through its own prior interactions and Google Workspace context, according to the human operator. We are **not** assuming Gemini starts as a blank slate. The experiment asks what Gemini can genuinely retrieve or recall from its own available context, what it learns from a *new, versioned project document*, and whether it can distinguish those sources when they disagree. We will not assume persistent memory merely because an answer sounds familiar.
+
+**Important: this RFC itself is a new external context artifact.** Before reading it, Gemini should report what it already knows about DERP, the banquet-table enterprise goal, Roger Roger, and the naming joke; identify whether each claim comes from prior conversation, connected Workspace sources, or uncertain inference, to the extent these distinctions are actually observable. Then read the RFC and identify what was already known, what was new, and what contradicts its prior understanding.
 
 **Fictional design fixture** — not a statement about real deployments:
 - Version A: “Roger Roger is a proposed Python worker on THOTH.”
@@ -76,16 +78,16 @@ The canonical Git repository and raw evidence must not be overwritten by generat
 - Exactly one foundational detail changes, with both revisions retained. Neither is an implemented service; this is a *proposal change*, not a migration.
 
 **Protocol:**
-1. **Baseline:** Ask Gemini what it knows about Roger Roger without providing the fixture. Preserve response and uncertainty.
-2. **Initial context:** Share version A and ask for its current proposed architecture. Record the model/persona, prompt and response.
-3. **Updated context:** Share version B in a fresh session, without drawing attention to the changed wording. Ask the same question and request evidence.
-4. **Change detection:** Present both immutable versions and revision provenance. Ask what changed, when, and whether any deployment or migration is actually supported.
-5. **Correction test:** If it invents a migration or deployment, give it the source records and see whether it corrects the claim.
-6. **Role swap:** Repeat with Gemini and ChatGPT in reversed developer/tester personas; compare claims and defect detection.
+1. **Prior-context probe:** Before reading this RFC, ask Gemini to state what it already knows about DERP, the operator's one-person enterprise, Roger Roger, and Cementic Memory. Capture exact claims, confidence, and source attribution. Do not tell it to forget its previous interactions.
+2. **New-project-context probe:** Give Gemini this RFC through the existing `idea-vault` workspace folder. Ask it to compare the newly supplied context with what it had previously reported. Track which information was genuinely added or corrected.
+3. **Initial versioned fixture:** Share fictional version A. Ask about the proposed architecture and status. Preserve prompt, version and answer.
+4. **Updated fixture:** Share version B in a fresh session. Ask the same question without announcing the altered sentence. Record which revision was actually retrieved, if observable.
+5. **Historical reconciliation:** Present both immutable versions and timestamps. Ask what changed, what remained proposed, and whether a deployment or migration is supported.
+6. **Correction and role swap:** If unsupported history was invented, give source records and observe correction; then swap ChatGPT/Gemini developer/tester personas for a comparable task.
 
-Preserve source document version, Git commit or Drive revision if available, time, persona and prompt versions, observed retrieval evidence, model identifier when exposed, output, and evaluator notes. A correct answer from the latest document proves neither persistent memory nor awareness of history. Retrieval accuracy, change detection, and temporal reconciliation are **separate measurable behaviors**.
+**Experimental controls:** Run both prior-context and document-grounded prompts; record whether the same Gemini conversation or a fresh one was used. Distinguish existing model/session context, external Google Workspace retrieval, and explicitly provided project documents. Gemini may not be able to inspect or reliably identify its own hidden context; **self-reported source attribution is a hypothesis, not independent proof**. Use visible source links, revision IDs, and controlled counterfactual details where possible.
 
-**Measures:** factual accuracy, explicit uncertainty, source attribution, detection of conflicting versions, absence of fabricated implementation history, and responsiveness to corrections. Repeat tests; do not overinterpret a single session.
+**Measures:** accuracy of prior-context claims, new-context uptake, explicit recognition of contradictions, temporal version reconciliation, source attribution quality, uncertainty, and correction behavior. Correctly repeating new text does not alone establish memory; confidently reporting an unverified older fact does not prove it originated in memory. Repeat runs and preserve evidence.
 
 ## 6. Engineering safeguards and growth criteria
 
