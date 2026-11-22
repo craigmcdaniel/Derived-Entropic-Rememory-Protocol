@@ -68,3 +68,9 @@ Sources consulted 2026-11-22:
 - Whether offline capture is needed immediately or belongs in phase two.
 - Whether editorial transformations are user-reviewed before committing.
 - How to link future Node-RED automation without making THOTH a single point of failure.
+
+## Current review documents
+
+- [Workspace Discipline and Engineering Lifecycle](./Workspace-Discipline-and-Engineering-Lifecycle.md) — proposed lifecycle, workspace contract, status model and inventory-first adoption plan; no deployment or directory reorganization completed.
+- [Remote Capture and Repository-Aware Routing](./Remote-Capture-and-Repository-Routing.md) — staging-first design; remote source capture is separate from canonical knowledge.
+- [Framework Review and Adoption Plan](./Framework-Review-and-Adoption-Plan.md) — comparison and staged adoption research.
