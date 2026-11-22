@@ -74,3 +74,6 @@ Sources consulted 2026-11-22:
 - [Workspace Discipline and Engineering Lifecycle](./Workspace-Discipline-and-Engineering-Lifecycle.md) — proposed lifecycle, workspace contract, status model and inventory-first adoption plan; no deployment or directory reorganization completed.
 - [Remote Capture and Repository-Aware Routing](./Remote-Capture-and-Repository-Routing.md) — staging-first design; remote source capture is separate from canonical knowledge.
 - [Framework Review and Adoption Plan](./Framework-Review-and-Adoption-Plan.md) — comparison and staged adoption research.
+
+- [RFC-0001 — Banquet Table Enterprise](./RFC-0001-One-Person-Multi-AI-Engineering-Enterprise.md) — open proposal for a low-cost, one-person multi-AI full-stack engineering workflow.
+- [RFC-0001 — Gemini Peer Review & Reconciliation (2026-11-22)](./RFC-0001-Gemini-Peer-Review-Reconciliation-2026-11-22.md) — Rev 1–3 cross-model review, naming/status corrections, deferred sync design, and next test plan; original Drive evidence linked.
