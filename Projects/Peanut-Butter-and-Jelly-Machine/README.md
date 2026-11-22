@@ -129,3 +129,7 @@ Model a manual or hypothetical PB&J production line as a sequence of timed work 
 Baseline and improved workflow measured under identical inputs; results include time-to-first-sandwich, total completion time, per-sandwich waiting time, throughput, and consistency. Preserve assumptions and actual observations separately, with no invented measurements.
 
 **Reconciliation:** Earlier machine-specific subsystems are optional speculative examples. They do not override this refined problem statement. The core task is **PB&J scaling efficacy under hungry-child observation**.
+
+## Process and cross-project pipeline diagrams
+
+See [PB&J Process and DERP Pipeline Diagrams](./Process-and-DERP-Pipeline-Diagrams.md) for the candidate sandwich workflow, sequential versus batched strategy comparison, mapping to the documented DERP engineering lifecycle, and a proposed worker/test/evidence handoff. These are design diagrams, not measurements or deployed automation.
