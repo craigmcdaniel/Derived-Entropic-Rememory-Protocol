@@ -1,7 +1,7 @@
 schema_version: 1
 project_id: peanut-butter-and-jelly-machine
 title: Peanut Butter and Jelly Machine
-status: proposed
+status: archived
 recorded_at: "2026-11-22"
 project_kind: architectural-experiment
 canonical_overview: Projects/Peanut-Butter-and-Jelly-Machine/README.md
@@ -22,3 +22,6 @@ release_reference: null
 rollback_reference: null
 last_verified_at: null
 next_milestone: simulate-process-state-machine
+session_closed_at: "2026-11-22"
+closure_reason: design-test-complete-awaiting-review
+review_document: Projects/Peanut-Butter-and-Jelly-Machine/Process-and-DERP-Pipeline-Diagrams.md
