@@ -1,3 +1,12 @@
+---
+title: ChatGPT to Obsidian Sync Test
+date: 2026-11-22
+source: ChatGPT
+status: sync-test
+tags:
+  - derp
+  - sync-test
+---
 <!-- Source: Google Drive / Derived-Entropic-Rememory-Protocol (DERP Staging) / DERP-Context-Staging -->
 <!-- Source modified: 2026-11-22T17:20:52.435Z -->
 <!-- Snapshot captured: 2026-11-22 -->
@@ -41,3 +50,17 @@ Staging Role: Google Workspace interim buffer for Obsidian vault context, sessio
    * Verified single-active-camera slot constraint (go2rtc WebRTC / Blue Iris UI3 drilldowns) and Kibana derp-events correlation boundaries.
    * Locked semantic honeypot service/subnet map (rogerroger at 10.4.10.4, shirley at 10.5.10.5).
    * Confirmed Workspace-to-Obsidian manual/local sync boundary (zero direct public GitHub API dependency).
+
+# ChatGPT → GitHub → Obsidian Sync Test
+
+This note was written by ChatGPT directly into the private DERP GitHub repository to verify the connection with Obsidian Git.
+
+**Test phrase:** The couch-based research department is operational.
+
+## Verification
+
+If you can read this note in Obsidian after **Git: Pull**, the GitHub-to-Obsidian direction is working.
+
+Related: [[DERP-Context-Staging-2026-11-22]]
+
+This is a test note only; it does not replace any existing vault content.
