@@ -105,3 +105,27 @@ DERP reconciliation     verify, link source evidence, promote known-good version
 **Result:** DERP can already supply a coherent *project initiation and evidence-handling framework* for an unrelated idea. A working physical PB&J automation design, generated parser, runtime bootstrap, existing working module matches, and autonomous deployment are **not** yet demonstrated.
 
 **Next milestone:** a zero-hardware state-machine simulation with versioned tests and results, before any real actuator integration.
+
+## Scope correction — hungry children and scaling efficacy (2026-11-22)
+
+**Verbatim user clarification:** "we are just solving a problem pbj scaling efficacy when watched by hungry chlidrens"
+
+**Interpretation for review:** This is an operations/throughput experiment, not a commitment to construct a physical robot. The real problem is reducing the elapsed time and variability needed to produce multiple PB&J sandwiches while hungry children wait and observe.
+
+### Revised experimental questions
+
+- How many sandwiches are required in a given time window (demand)?
+- What is actual and target sandwich throughput (sandwiches/minute)?
+- Where are the bottlenecks: bread handling, spreading PB, spreading jelly, assembly, or handoff?
+- Does parallel preparation, batching, or rearranging work improve throughput without creating more cleanup or defects?
+- How much does performance change when the operator is being watched or interrupted? Treat any such effect as a test hypothesis, not an established fact.
+
+### Smallest useful experiment
+
+Model a manual or hypothetical PB&J production line as a sequence of timed work steps. Run simulated demand scenarios with different arrival rates and batch sizes. Produce a comparison of completion time, waiting time, throughput and failed/reworked sandwiches. Only propose automation for an observed bottleneck; there is no requirement to invent motors, controllers or deploy equipment.
+
+### Success criteria (to set before testing)
+
+Baseline and improved workflow measured under identical inputs; results include time-to-first-sandwich, total completion time, per-sandwich waiting time, throughput, and consistency. Preserve assumptions and actual observations separately, with no invented measurements.
+
+**Reconciliation:** Earlier machine-specific subsystems are optional speculative examples. They do not override this refined problem statement. The core task is **PB&J scaling efficacy under hungry-child observation**.
