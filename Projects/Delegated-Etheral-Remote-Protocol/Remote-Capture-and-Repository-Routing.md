@@ -114,3 +114,52 @@ Do not invent precise timestamps, session identifiers, evidence hashes or commit
 - A derived SQLite/FTS5 index and GraphQL/MCP endpoints are future optimization, not prerequisites.
 - Node-RED is an asynchronous maintenance layer, never a hard dependency for mobile capture.
 - The ten-minute autosave remains on the back burner.
+
+## Revision: remote staging bucket and reconciliation gate (2026-11-22)
+
+**Design preference:** Remote capture is a distinct staging area, *not* a direct writer to canonical project files. This supersedes the earlier proposed immediate editorial update to canonical documentation. No worker or merge is claimed to exist yet.
+
+### Proposed flow
+
+```mermaid
+flowchart TD
+    A["Remote voice / GPT / Gemini"] --> B["Remote staging inbox (append-only Git paths)"]
+    B --> C["Extractor: observations, topics, provenance"]
+    C --> D["Reconciler: source checking, duplicates, conflicts, project match"]
+    D -->|verified, accepted| E["Canonical DERP docs and Obsidian"]
+    D -->|ambiguous or contradicted| F["Review / unresolved queue"]
+    E --> G["Context index and handoff files"]
+    F --> D
+    B --> H["Permanent raw evidence and commit history"]
+```
+
+### Storage choice
+
+The initial "bucket" can simply be an **isolated `Remote-Staging/` prefix in the same GitHub repository**, to minimize permissions, services, and sync complexity. Use a dedicated Git branch or repository only if we establish a real need for stricter publication boundaries, access controls, or independent retention. A GitHub prefix is logical organization, not an access-control boundary: for sensitive sources, use a private repository or appropriately controlled storage.
+
+Suggested paths:
+
+```text
+Remote-Staging/
+  incoming/<YYYY-MM-DD>/<unique-id>.md
+  extracted/<unique-id>.json
+  receipts/<unique-id>.json
+  review/<unique-id>.md
+Projects/<project>/...                    # curated knowledge, separate from raw
+```
+
+Treat raw files as immutable after capture; revisions are linked follow-ups. `extracted`, `receipts`, and `review` are prospective, not created by this design note.
+
+### State machine
+
+`captured → extracted → matched → verified → merged`, with `held`, `rejected`, and `superseded` states. "Matched" means candidate topic association only, not validated truth. "Verified" must identify the evidence and decision. A rejected interpretation never deletes source. All actions should be idempotent keyed by capture ID and source commit, with receipts that record the destination update commit only after confirmed success.
+
+### Safeguards
+
+- Remote ChatGPT should write new staging records only. A failed or unreachable THOTH never blocks capture.
+- Node-RED detects staging commits, builds suggested changes, tracks review queue and exposes health telemetry; it does **not** automatically approve claims.
+- Compare against canonical documents by stable ID, not just name similarity; flag contradictions and duplicate evidence.
+- Canonical changes occur only after the chosen reconciliation/approval policy. Start with human review.
+- Keep a permanent link from canonical notes to the original capture ID and source commit.
+- Guard against generated files triggering infinite Git watcher loops by path filtering and idempotent processing.
+- Preserve Git conflict safety and separation of source records from derived material.
