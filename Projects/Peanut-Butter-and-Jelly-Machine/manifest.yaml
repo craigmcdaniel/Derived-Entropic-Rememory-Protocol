@@ -1,0 +1,24 @@
+schema_version: 1
+project_id: peanut-butter-and-jelly-machine
+title: Peanut Butter and Jelly Machine
+status: proposed
+recorded_at: "2026-11-22"
+project_kind: architectural-experiment
+canonical_overview: Projects/Peanut-Butter-and-Jelly-Machine/README.md
+repository: craigmcdaniel/Derived-Entropic-Rememory-Protocol
+source_of_truth: git
+linked_research:
+  - Projects/Delegated-Etheral-Remote-Protocol/Workspace-Discipline-and-Engineering-Lifecycle.md
+  - Projects/Delegated-Etheral-Remote-Protocol/Remote-Capture-and-Repository-Routing.md
+  - Projects/Delegated-Etheral-Remote-Protocol/Architecture-Brainstorm.md
+  - Projects/Delegated-Etheral-Remote-Protocol/Framework-Review-and-Adoption-Plan.md
+runtime_hosts: []
+development_paths: []
+hardware_platform: null
+controller: null
+test_command: null
+deployment_target: null
+release_reference: null
+rollback_reference: null
+last_verified_at: null
+next_milestone: simulate-process-state-machine
