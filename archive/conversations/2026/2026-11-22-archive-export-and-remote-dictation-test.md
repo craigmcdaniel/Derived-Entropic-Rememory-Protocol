@@ -1,11 +1,12 @@
 ---
-title: First DERP conversation capture — archive export and remote microphone
+title: First DERP conversation capture — public editorial record
 date: 2026-11-22
 reported_local_time: "13:08"
 reported_timezone: "America/Detroit"
 source: ChatGPT conversation
-capture_type: partial-verbatim-test
+capture_type: editorially-normalized-partial-capture
 status: export-request-submitted-awaiting-download
+publication_edit: 2026-11-23
 tags:
   - derp
   - conversation-archive
@@ -16,32 +17,32 @@ tags:
 
 # First DERP conversation capture — 2026-11-22
 
-**Capture scope:** Verbatim user messages from the current conversation relevant to the archive request and microphone test. This is **not** a complete verbatim export of all prior ChatGPT exchanges; that awaits the original account export. Quoted wording is preserved, including typos and profanity. User-reported clock time is retained as reported, not inferred from a commit timestamp.
+**Scope:** Chronological public record of the archive-export and microphone test discussion. This **is not verbatim** and is not a complete ChatGPT account export. The original text was previously committed and may remain available in public Git history. Exact user-reported timing is retained.
 
-## Verbatim user messages
+## Conversation sequence — edited presentation
 
-### Earlier in the discussion — archival goal
+### Archival objective
 
-> how can we use this the right way, you have months and months of shit we can back up now
+The user asked how DERP could preserve months of existing conversation history in a useful, searchable format rather than discard the previous research. The intent was to recover as much relevant source material as possible.
 
 ### Export selection
 
-> Im not sure what to download from gpt
+The user was uncertain which ChatGPT account export to download and wanted a workable import path.
 
-### First capture test — user-reported 1:08 PM, November 22, 2026
+### Initial capture test — user-reported 1:08 PM, November 22, 2026
 
-> ok great. so now when we create a new chat it goes like this. Surmise our history verbatim, no summarys, push locally, then push up. and let this be the first test. Wrap up our archive import talk, note that I submitted it and am currently waiting. its 108 pm. And this is the first experiment of me talking on the other side of the fucking room to you live
+The user requested that, on starting a new conversation, prior research be captured without losing source detail, pushed into the local archive, and then pushed upstream. This was proposed as the first end-to-end handoff test. The user also requested an immediate checkpoint: the ChatGPT export had been submitted and was awaiting download. A live microphone test was conducted while the user was speaking from across the room. The tone was informal and enthusiastic; unnecessary profanity has been omitted from the public edition.
 
 ## Archive import checkpoint
 
-- **User-reported state at 1:08 PM EST:** ChatGPT account data export request submitted; awaiting the export download.
-- **Next evidence source:** Original ChatGPT export ZIP, with conversation JSON files, once received.
-- **Import state:** Historical bulk import not started. Full transcripts, timestamps, and completeness will be verified against export data before backfill.
-- **Test observation:** User reports speaking live to ChatGPT from the other side of the room using a microphone. Capture of the transcribed message in this repository tests the recording workflow; it does **not** independently measure microphone distance or audio quality.
-- **Current capture transport:** ChatGPT → authenticated GitHub connector → private DERP repository → Obsidian Git pull → local vault. Local-first writing by ChatGPT was **not** performed; the local copy arrives on pull.
+- **User-reported state at 1:08 PM EST:** ChatGPT account data export request submitted; awaiting download.
+- **Next evidence source:** Original ChatGPT export ZIP and conversation JSON once received.
+- **Import state:** Historical bulk import not started at this checkpoint. Transcript completeness and times were not independently verified.
+- **Microphone observation:** The user reported speaking from across the room using live voice. No independent audio-distance test was performed.
+- **Capture transport at this stage:** ChatGPT → authorized GitHub connection → DERP repository → Obsidian Git pull → local vault. Subsequent direct GitHub writes occurred; local pull status must be separately verified. Earlier references to the repository as private describe a historical intention and do **not** represent current public visibility.
 
-## Agreed archival approach (operational metadata, not transcript)
+## Source preservation rule
 
-Preserve original conversations as original evidence. Keep derived ideas, annotations, interpretations, and corrections separate. Use dated records with provenance and Git revision history. Do not treat earlier model memory as a verbatim conversation archive.
+An original export or exact source transcript is the primary evidence; this publication copy is a derived document. Retain full sequence, intent, timestamps, and corrections, but do not claim an edited public record is verbatim.
 
-Related: [[Conversation-Archive-Strategy]], [[DERP-Research-Backlog]]
+Related: [Conversation Archive Strategy](../../../research/Conversation-Archive-Strategy.md), [DERP Research Backlog](../../../research/DERP-Research-Backlog.md).
