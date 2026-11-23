@@ -19,6 +19,82 @@ This is a **public walkthrough of the method**, not a release of anyone's privat
 
 **Notebooks are presentation. Source evidence is the record.** Never run Python or shell commands extracted from a chat or Markdown file automatically.
 
+## COPY THIS: a working starter
+
+The [public starter worker](./derp_starter.py) is deliberately small: **Python standard library only**, read-only access to the original ZIP, and no need to upload private conversations. It writes a conversation metadata index, a CSV, and a manifest into a **new** output directory. It does **not** claim to be the full v0.3 dialogue converter.
+
+### 1. Download the script (PowerShell)
+
+Create a private working directory on a local disk and download the audited-in-repository example:
+
+```powershell
+$Work = "H:\\DERP-Private"
+New-Item -ItemType Directory -Force -Path $Work | Out-Null
+
+$Worker = Join-Path $Work "derp_starter.py"
+$Url = "https://raw.githubusercontent.com/craigmcdaniel/Derived-Entropic-Rememory-Protocol/main/Reconciliation/derp_starter.py"
+
+Invoke-WebRequest -Uri $Url -OutFile $Worker
+Get-FileHash -Algorithm SHA256 -LiteralPath $Worker
+```
+
+Change `$Work` if your private storage is not on `H:`. Read the worker before running it.
+
+### 2. Run the indexer on your own export (PowerShell)
+
+```powershell
+$Zip = "G:\\path-to-your-chatgpt-export.zip"
+$Output = Join-Path $Work "obsidian-index-v01"
+
+if (-not (Test-Path -LiteralPath $Zip)) {
+    Write-Host "ERROR: Export ZIP not found"
+    return
+}
+
+if (Test-Path -LiteralPath $Output) {
+    Write-Host "ERROR: Output exists; select a new directory"
+    return
+}
+
+py -3 $Worker $Zip $Output --cutoff "2025-10-01T00:00:00-04:00"
+```
+
+Choose your own cutoff. The example is based on DERP's historical pilot. The worker refuses to overwrite an existing output folder.
+
+### 3. Open the result in Obsidian
+
+```powershell
+Invoke-Item -LiteralPath (Join-Path $Output "INDEX.md")
+```
+
+To use it as a vault, open Obsidian → **Manage vaults** → **Open folder as vault** and select the `obsidian-index-v01` directory. This initial index is a navigable conversation list; the full dialogue-to-Markdown converter is a separate, more advanced step.
+
+### 4. Record reconciliation decisions (Markdown example)
+
+Create a note in a **private** vault under `Reconciliation/Errata/`:
+
+```markdown
+---
+type: errata
+status: pending-review
+source: chatgpt-export
+---
+
+# Example correction
+
+- Claim: A service was running on HOST-A.
+- Source conversation ID: REPLACE_WITH_ID
+- Source message node ID: REPLACE_WITH_NODE_ID
+- Observed at: REPLACE_WITH_TIMESTAMP
+- Later correction: The service was only proposed, not installed.
+- Evidence for correction: REPLACE_WITH_CORRECTING_NODE_ID
+- Classification: proposed
+- Verification: pending
+- Next action: Review both messages before updating project notes.
+```
+
+**Important:** this template is an illustrative example, not a real claim from DERP's private archive. Do not silently promote a text match to a verified operational fact.
+
 ## How the pieces fit
 
 ```mermaid
