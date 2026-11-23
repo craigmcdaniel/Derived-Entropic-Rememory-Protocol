@@ -14,7 +14,7 @@ tags:
 
 ## Goal
 
-Recover months of conversational research, experiments, spontaneous ideas, corrections, and creative work into a private, searchable, version-controlled Obsidian vault.
+Recover months of conversational research, experiments, spontaneous ideas, corrections, and creative work into an access-controlled, searchable, version-controlled Obsidian vault. **The current GitHub repository is public and must not be treated as that private source archive.**
 
 The user retains authority over which material is archived and how it is classified. GitHub is the canonical versioned vault; local Obsidian synchronizes it. Google Workspace is staging for the Gemini Chat bridge, not the permanent source of truth.
 
