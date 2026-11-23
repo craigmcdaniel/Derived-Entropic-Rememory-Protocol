@@ -3,7 +3,7 @@
 **Status:** Proposed new project — research and design, not implemented  
 **Recorded:** 2026-11-22 (America/Detroit)  
 **Parent:** Derived-Entropic-Rememory-Protocol  
-**Verbatim source:** [Verbatim Source](./Verbatim-Source.md)
+**Public source record:** [Edited source record](./Verbatim-Source.md) (editorially normalized; not verbatim). Raw transcripts are not intended for public publication.
 
 > **Naming note:** The project name is preserved exactly as supplied: **Delegated Etheral Remote Protocol**. “Ethereal” is the conventional spelling of that adjective, but renaming the project requires an explicit decision. This is not a conventional networking protocol at this stage; “Protocol” is part of the working project name.
 
