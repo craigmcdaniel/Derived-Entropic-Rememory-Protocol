@@ -84,6 +84,7 @@ flowchart TD
 
 ## Explore this public demonstration
 
+- [**Hey, check this out: reconcile your old GPT stuff**](./Reconciliation/README.md) — turn exported chats into an evidence-linked private Obsidian archive and resumable AI handoffs.
 - [Delegated Etheral Remote Protocol](./Projects/Delegated-Etheral-Remote-Protocol/README.md) — remote note capture and cross-model review.
 - [Container Security Labs](./Projects/Container-Security-Labs/README.md) — container boundaries and documented lab work.
 - [Matryoshka Containment Unit](./Projects/Container-Security-Labs/Matryoshka-Containment-Unit-Checkpoint-2026-11-23.md) — evidence-first case study.
