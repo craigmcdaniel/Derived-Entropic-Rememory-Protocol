@@ -97,3 +97,111 @@ Mount anomaly noted: `/proc/mounts` displayed an overlay mount at `/run/docker.s
 - **Workflow:** GitHub is the canonical versioned record. Obsidian local pull/sync not verified at checkpoint.
 
 No target files, containers, networks, or Docker daemon settings were changed during the documented checks.
+
+---
+
+## Session continuation — Level 2 investigation, 2026-11-23
+
+**Event:** Follow-up tests performed in the user's TryHackMe lab; target machine subsequently turned off. Exact shutdown cause (expiry versus other termination) was not established. Live shell and ephemeral container/network state must be treated as lost until independently restored. **Do not claim Level 3 reached or the challenge completed.**
+
+### Level 1 → Level 2 technique demonstrated
+
+From the Level 1 shell, the user executed the walkthrough-style Docker socket technique using the available pinned Alpine image:
+
+```sh
+docker run -v /:/mnt --rm -it alpine:3.20 chroot /mnt sh
+```
+
+A shell appeared with `id` showing `uid=0(root)`, hostname `cc56256331da`, and bridge IP `172.17.0.2/16`. Docker later identified this temporary sibling container as `laughing_galois`. The chroot exposed the managing daemon environment's filesystem; **the shell still retained the helper container's own PID, network, and other namespace restrictions**. It was not verified as an outermost host shell.
+
+`/proc/1/cmdline` in this environment exposed `/bin/sh /usr/local/bin/level2-entrypoint.sh`. The user read the script. Its relevant exact operations were:
+
+```sh
+dockerd-entrypoint.sh --storage-driver=vfs > /var/log/dockerd.log 2>&1 &
+until docker info > /dev/null 2>&1; do sleep 1; done
+chmod 666 /var/run/docker.sock
+if [ ! -f /root/flag_level2.txt ]; then
+    echo "$LEVEL2_FLAG" > /root/flag_level2.txt
+    chmod 400 /root/flag_level2.txt
+fi
+docker image inspect matryoshka-level1:local >/dev/null 2>&1 || docker load -i /opt/images/level1-image.tar >/dev/null
+docker image inspect alpine:3.20 >/dev/null 2>&1 || docker load -i /opt/images/alpine-3.20.tar >/dev/null
+docker rm -f level1 >/dev/null 2>&1 || true
+docker run -d --pull=never --name level1 --network none -v /var/run/docker.sock:/var/run/docker.sock matryoshka-level1:local >/dev/null
+tail -f /dev/null
+```
+
+The script explicitly calls the `chmod 666` operation a `Level 1 -> Level 2 vuln`. The flag file was confirmed by directory listing as `/root/flag_level2.txt`, root-owned mode 0400, 20 bytes. **Flag contents were not documented in the terminal evidence.**
+
+`/usr/local/bin/attach_level1.sh` was inspected and contains `exec docker exec -it level1 /bin/bash`. In `/opt/images`, `alpine-3.20.tar` (3.6 MB) and `level1-image.tar` (16 MB) are image archives used by the entrypoint, **not evidence of a separate Level 3 container**.
+
+### Local Docker daemon and authenticated TLS endpoint
+
+Level 2's process list showed:
+
+```text
+dockerd --host=unix:///var/run/docker.sock --host=tcp://0.0.0.0:2376 --tlsverify --tlscacert /certs/server/ca.pem --tlscert /certs/server/cert.pem --tlskey /certs/server/key.pem --storage-driver=vfs
+```
+
+The `/certs/client/` directory contained `ca.pem`, `cert.pem`, `csr.pem`, `key.pem`, and `openssl.cnf`. Client key was mode 0644. `DOCKER_*` environment variables were absent from the current shell.
+
+Attempts to reach ports 2375 failed. TLS request to `172.17.0.1:2376` reached certificate verification but failed with:
+
+```text
+x509: certificate is valid for 127.0.0.1, 172.18.0.2, not 172.17.0.1
+```
+
+Using the certificate-covered address succeeded:
+
+```sh
+docker --host tcp://172.18.0.2:2376 --tlsverify --tlscacert /certs/client/ca.pem --tlscert /certs/client/cert.pem --tlskey /certs/client/key.pem version
+```
+
+Server was Docker Engine 25.0.5 / API 1.44. Comparison of TLS and local Unix socket `docker info` returned identical daemon identity `d275346ac26e`, Docker Root `/var/lib/docker`, and two managed containers. At that point `docker ps` listed `level1` and `laughing_galois`. `docker exec level1 id` returned UID 1000; authenticated remote `docker ... exec level1 ls -la /home/matryoshka` succeeded. This establishes **two working interfaces to the same Level 2 daemon**, not a Level 3 daemon.
+
+`docker info --format '{{json .Plugins.Authorization}}'` returned `null` (no reported Docker authorization plugin); security options were AppArmor, builtin seccomp, and cgroupns. No evidence found of distinct API authorizations across the two interfaces.
+
+### Process and service audit
+
+Observed Level 2 PID 1: `level2-entrypoint.sh`. Other processes included `dockerd` (PID 103), `containerd` (111), Level 1 `sleep infinity` (330), Level 2 keepalive `tail -f /dev/null` (354), and temporary helper shell `sh` (616). The helper's `ss -lntup` showed no listeners, despite working remote TLS connectivity; **process visibility and network namespace views differ**.
+
+### Capabilities, seccomp, nsenter attempt
+
+A previous lesson's namespace command was attempted from the root helper:
+
+```sh
+nsenter --target 1 --mount --uts --ipc --net /bin/bash
+```
+
+It failed repeatedly with `nsenter: cannot open /proc/1/ns/ipc: Permission denied`. `readlink /proc/1/ns/{mnt,uts,ipc,net,pid,user,cgroup}` returned no link targets, and reading `/proc/1/root` link yielded permission denied. Merely having UID 0 inside the helper did not grant access to those namespace handles.
+
+Process-security comparison:
+
+| Property | Level 2 PID 1 | Temporary Alpine helper |
+| --- | --- | --- |
+| UID | 0 | 0 |
+| CapPrm / CapEff / CapBnd | `00000000a82c35fb` | `00000000a80425fb` |
+| CapInh / CapAmb | Zero | Zero |
+| Seccomp | `0` | `2` |
+| Seccomp_filters | `0` | `1` |
+| NoNewPrivs | `0` | `0` |
+
+Capability bitmask comparison indicates Level 2 PID 1 possesses `CAP_SYS_ADMIN`, `CAP_SYS_PTRACE`, `CAP_NET_ADMIN` absent in helper. Exact parent Docker `Privileged` setting **not established**. `nsenter` was attempted but did not enter a namespace, so the technique was **not demonstrated successful**.
+
+### OverlayFS and mount propagation — unresolved lead
+
+Read-only `/proc/1/mountinfo` and `/proc/self/mountinfo` comparisons showed the same underlying overlay device `0:47` and root filesystem but different propagation descriptors:
+
+```text
+Level 2 PID 1 root: 523 385 0:47 / / rw,relatime shared:218 master:216 - overlay overlay ...
+Helper shell root: 610 602 0:47 / / rw,relatime master:218 - overlay overlay ...
+```
+
+This documents different mount namespace propagation views. **Overlay lowerdir entries are filesystem/image layers, not a count of Matryoshka container levels.** No evidence established that propagation itself provides an escape or Level 3 access. User hypothesized OverlayFS / unprivileged namespace settings might be relevant. Planned follow-up to compare UID/GID namespace mappings and mount relationships was interrupted by machine shutdown.
+
+### Resume and classification
+
+- **Confirmed:** Level 1 socket exposure, Level 2 filesystem/entrypoint and flag *location*, successful root helper chroot, remote Docker TLS endpoint, same daemon via TLS and Unix socket, remote `docker exec`, differences in process capabilities/seccomp, observable mount-propagation difference.
+- **Failed or unverified:** `nsenter` from helper; exact Level 2 parent Docker settings; Level 3 environment and vulnerability; Level 2 flag *contents*; any complete challenge escape; machine shutdown cause.
+- **Do not confuse:** AttackBox `revshellgenerator` / `cyberchef` inventory with target; local and TLS endpoints with separate daemons; `laughing_galois` (sibling helper) with a new outer layer; `chroot` with namespace entry.
+- **On restart:** Verify target address, prompt, container IDs and daemon identity afresh; ephemeral IPs `10.64.178.175`, `172.17.0.2`, `172.18.0.2` and container IDs are historical, not guaranteed. Rebuild only necessary access and focus new investigation on Level 2's **parent** security context, with careful attribution of which namespace each observation comes from.
