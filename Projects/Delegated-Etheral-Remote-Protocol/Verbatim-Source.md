@@ -1,14 +1,17 @@
-# Delegated Etheral Remote Protocol — Verbatim Source
+# Delegated Etheral Remote Protocol — Public Source Record
 
 - Captured: 2026-11-22
-- Source: User chat/voice transcript
-- Status: Original wording preserved; no spelling or punctuation edits
-- Relation: DERP remote note-taking and brainstorming proposal
+- Source: User chat/voice statement
+- Original classification: Verbatim source
+- Publication treatment: Editorially normalized on 2026-11-23; **not a verbatim transcript**
+- Relation: [Delegated Etheral Remote Protocol](./README.md)
 
-## Original user utterance
+## Original idea — edited for publication
 
-> And now its time for a new project. The timer is going on the back burner. now for the important part thta we are missing here, which is going to require some research maybe. Call this--Delegated Etheral Remote Protocol which is our gpt note taking and brainstorming while not at home, if we ever Gasp, leave the fucking hosue. While you save verbatim, plea fix glaring issues for official docuemntaion
+The user proposed a new project named **Delegated Etheral Remote Protocol** to support GPT-assisted note-taking and brainstorming while away from home. A separate timer idea was explicitly deferred. The request emphasized preserving original wording in the private/source archive while correcting glaring transcription mistakes in official documentation. The original statement included informal humor about rarely leaving home and conversational profanity, which are not reproduced in this public edition.
 
-## Source policy
+## Evidence and editorial provenance
 
-This file is the preserved original wording. Corrections and architectural decisions belong in the companion design note, not in this transcript.
+The idea, original project spelling, design intent, and sequencing have been preserved. This is a public-facing editorial transformation, not an exact quotation. The pre-edit version may remain accessible through the public Git history and should not be represented as privately removed.
+
+Future unedited transcripts belong in an access-controlled archive; published documents should clearly say whether text is verbatim or editorially normalized.
