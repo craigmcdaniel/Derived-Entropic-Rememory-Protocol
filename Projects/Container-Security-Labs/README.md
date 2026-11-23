@@ -57,3 +57,36 @@ This is a separate coursework record, **not** a change to the deployed THOTH/CHA
 ## Next checkpoint
 
 Run the authorized lab, capture actual terminal output, and reconcile the observed result with the exercise. Do not mark the lab completed on the strength of a repository commit.
+
+## Task 1 — Observed container inspection (2026-11-23)
+
+**Evidence type:** User-pasted terminal transcript; collected from the training container prompt `root@2225bfdee7ec`. This is observed terminal output, not independent host verification. Exact execution time was not supplied.
+
+| Check | Observed evidence | Classification |
+| --- | --- | --- |
+| Identity | `uid=0(root) gid=0(root) groups=0(root)` | Observed |
+| Effective capabilities | Broad effective/permitted set, including `cap_sys_admin`, `cap_sys_module`, `cap_sys_ptrace`; `capsh --print` also displayed a broad bounding set | Observed |
+| cgroups | Multiple v1 controllers present, including `rdma`; `/proc/self/cgroup` also contains hierarchy `0::/docker/...` | Observed, hybrid/mixed layout not fully assessed |
+| RDMA mount | `cgroup /tmp/cgrp cgroup rw,relatime,rdma,release_agent=/var/lib/docker/overlay2/.../diff/exploit` | Observed |
+| Working directory | `/tmp/cgrp/x` exists and contains `cgroup.procs`, `notify_on_release`, `rdma.current`, `rdma.max`, `tasks` | Observed |
+| Flag | No flag content or file listing shown | Unknown |
+
+### Relevant command errors and reconciliation
+
+- From `/tmp/cgrp/docker`, `cd x` failed because the `x` directory was at `/tmp/cgrp/x`. The user then changed to `/tmp/cgrp` and successfully entered `x`.
+- Entering `cgroup.procs` by itself generated `-bash: cgroup.procs: command not found`; this is a pseudo-file, not a shell executable.
+- The `release_agent` mount option references an overlay-backed `exploit` location, but the transcript does **not** show whether the file exists, was executed, or produced a flag. Do not promote the flag task to complete.
+- A visible cgroup v1 RDMA hierarchy is consistent with the exercise; the transcript also contains a `0::` entry, so describing the system as exclusively v1 would overstate the observation.
+
+### Next read-only evidence
+
+Check for the exercise's expected container-side result before changing state:
+
+```bash
+printf '=== FLAG FILE CHECK ===\\n'
+ls -l /flag.txt 2>&1
+if [ -f /flag.txt ]; then cat /flag.txt; fi
+printf '=== CHECK COMPLETE ===\\n'
+```
+
+If absent, record absence rather than assuming the host-side execution succeeded.
