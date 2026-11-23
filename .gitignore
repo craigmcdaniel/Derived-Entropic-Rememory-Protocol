@@ -1,0 +1,38 @@
+# Local editor state (do not affect project source files)
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/cache/
+.obsidian/plugins/*/data.json
+.obsidian/plugins/*/main.js
+.obsidian/plugins/*/styles.css
+
+# OS, temporary, and build output
+.DS_Store
+Thumbs.db
+*.swp
+*.tmp
+*.bak
+__pycache__/
+*.pyc
+node_modules/
+dist/
+build/
+
+# Credentials and unreviewed source exports
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*credentials*
+*secret*.json
+archive/raw/
+archive/imports/
+private/
+personal/
+*.zip
+
+# Note: ignore rules affect only untracked files. Existing tracked files
+# and prior Git commits remain public until explicitly handled.
