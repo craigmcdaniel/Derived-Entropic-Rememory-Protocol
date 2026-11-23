@@ -1,5 +1,7 @@
 # Matryoshka Containment Unit — Checkpoint
 
+> **Current editorial status (2026-11-23):** Host namespace transition verified; host root execution observed; host flag path reported as `/root/flag_host.txt`. Final flag contents and TryHackMe submission were not supplied. The following opening status is the **original historical checkpoint**, retained to preserve provenance. Read the final session closeout at the bottom for the latest results.
+
 **Status:** Paused after read-only reconnaissance; level1 identified, further layers unknown  
 **Recorded:** 2026-11-23 (America/Detroit)  
 **Source:** User-pasted TryHackMe lab introduction, terminal outputs, and conversational corrections. Outputs are attributed to the user’s lab terminal rather than independently reproduced.  
