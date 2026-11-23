@@ -54,7 +54,7 @@ def main():
     with zipfile.ZipFile(args.archive) as archive:
         filenames = sorted(
             n for n in archive.namelist()
-            if re.fullmatch(r"conversations-\\d+\\.json", n)
+            if re.fullmatch(r"conversations-\d+\.json", n)
         )
         if not filenames:
             parser.error("No conversations-000.json style files in archive")
