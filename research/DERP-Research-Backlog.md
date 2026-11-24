@@ -188,3 +188,31 @@ No assumption that the first FREYR experiment must deploy PostgreSQL, Grafana, o
 The preceding inventory entry over-simplified DERPBooks as “extract a check stub before deciding whether to build a database.” **Superseded:** A dedicated SQL-capable data layer and Git-centric design are foundational requirements. We can still choose a minimal first vertical slice without pre-building the entire financial application.
 
 **Next inventory question:** Clarify the relationship between the financial records store (possibly PostgreSQL) and the repository-local index (possibly SQLite): one database or two distinct purposes? Preserve the decision before defining a schema or repository scaffold.
+
+## 2026-11-24 — DERPBooks intake clarification: inbox/outbox PDF ingestion
+
+**User's wording:** “and if you recall, taking inspiration from the inbox/outbox thing, and earlier the ocntent away nature of obsidian this is going to ingest pdfs the same way”
+
+**Status:** Foundational design requirement clarified by user; pipeline not yet implemented or tested in DERPBooks.
+
+### Required design
+
+DERPBooks combines the previously discussed **inbox/outbox ingestion pattern** with the **Obsidian-style separation of content from its index**:
+
+1. **File intake:** PDFs (initially paycheck stubs; later bank/financial documents) are placed into an incoming directory. This should be a deliberate, repeatable workflow, not a one-off paste into a chatbot.
+2. **Original source preservation:** Keep the original PDF as an authoritative file. Track identity, hash, path, ingestion/source timestamps, and processing history. Preserve originals without rewriting them.
+3. **Processing:** Extract embedded PDF text where available, OCR only where necessary; normalize candidate financial fields, record provenance and confidence, and track correction/review state.
+4. **Structured data layer:** Ingest verified/approved fields and financial records into a dedicated SQL-backed layer, supporting queries, reconciliation and controlled modifications; never treat the document index as a replacement for the original PDF.
+5. **Outbox / result area:** Produce reviewed outputs, extraction reports, indexes or sanitized summaries, with explicit association to source document IDs. Exact routing of successful, failed, and review-needing items remains to be designed.
+6. **Git-centric project:** Version code, schemas, migrations, transformation definitions, documentation and approved metadata/configuration; keep private pay statements and sensitive financial data out of the **public** DERP repository. Git records application changes and provenance, not an automatic mandate to commit original financial documents.
+7. **Obsidian-inspired storage principle:** Documents remain standalone files, the database stores searchable indexes/relationships and financial entities, and the links between them can be rebuilt from source evidence where practical.
+
+### Architectural interpretation to verify later
+
+Earlier brainstorming distinguished a **SQLite document index** from a **PostgreSQL authoritative financial ledger**. This is a possible two-layer implementation, not a requirement to run two database engines; the core user requirements are file-oriented ingestion and dedicated SQL operations from the start.
+
+### Correction to prior backlog wording
+
+The project is **not** a “check stub parser first, maybe add a database later.” A minimal initial vertical slice already includes inbox → document preservation → extraction → SQL indexing/records → outbox/reconciliation, all inside a Git-native application lifecycle.
+
+**Next inventory question:** What should the outbox mean operationally—processed documents, reports for review, or both? Keep this open until the user defines the desired handoff.
