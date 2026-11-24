@@ -703,3 +703,17 @@ ready : HTTP 200
 **Current verified deployment:** Go Money v1.8.0 backend running in foreground from `E:\dls` on INFINITY, THOTH PostgreSQL reachable with dedicated database/role, both ops `/health` and `/ready` confirmed HTTP 200. Native frontend, Grafana finance dashboards, PDF ingestion and VERN connector are **not** implemented yet.
 
 **Status:** Workflow preference captured, implementation proposed.
+
+## 2026-11-24 — Go Money production schema inspected on THOTH: 18 tables
+
+**Source:** User-pasted read-only THOTH `sudo -u postgres psql -d money` output after Go Money v1.8.0 backend startup. The command queried `information_schema.tables`, selected `information_schema.columns` for account/transaction/category-name tables, and measured database size.
+
+**Confirmed output:** 18 public base tables (`accounts`, `app_configs`, `categories`, `currencies`, `daily_stat`, `double_entries`, `import_deduplication`, `import_ignored_transactions`, `jti_revocations`, `migrations`, `rules`, `schedule_rules`, `service_tokens`, `system_configurations`, `tags`, `transaction_history`, `transactions`, `users`). `pg_size_pretty(pg_database_size('money'))` returned `8630 kB`.
+
+**Selected schema evidence:** `accounts` has `id`, `name`, `current_balance`, `currency`, `extra` JSONB, `type`, `deleted_at`, `account_number`, `iban`, `first_transaction_at`, `tag_ids`. `transactions` has distinct source and destination account IDs, amounts, currencies; `transaction_date_only`, `transaction_date_time`; `title`, `notes`, `extra` JSONB, `reference_number`, `category_id`, `deleted_at`, `voided_by_transaction_id`; base currency and FX fields. `transaction_history` includes `transaction_id`, `event_type`, `actor_type`, `actor_user_id`, `actor_rule_id`, `actor_extra`, `snapshot` JSONB, `diff` JSONB, `occurred_at`. `import_deduplication` and `import_ignored_transactions` are present.
+
+**Interpretation:** Go Money has useful native structures for double entry, automated rules, history and import deduplication; whether its change history or deduplication meet DERP's exact source-document requirements remains untested. Avoid assuming historical snapshots replace independent immutable PDF lineage. No user financial transactions shown in this output.
+
+**Next read-only checks:** Table row counts (do not print account numbers or monetary transaction details), relevant import/history/double-entry column metadata and constraints, and potentially default categories/accounts. Then plan a separate read-only PostgreSQL role for Grafana with narrow grants or explicitly defined views; do not give Grafana the owner/\`money\` role. Investigate official APIs for importing validated PDF-derived data; do not directly write Go Money's internal tables.
+
+**Status:** Go Money schema creation verified. No Grafana finance datasource/dashboard or PDF ingestion deployed.
