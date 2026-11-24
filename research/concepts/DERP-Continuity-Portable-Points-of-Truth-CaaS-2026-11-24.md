@@ -352,3 +352,70 @@ Offer **DERP Continuity PowerPack** as an optional tier for customers requiring 
 ### Next evidence-producing test
 
 Meter the actual ZBook + edge datastore + router + switch workload. Power the isolated synthetic environment through a commercially suitable battery system. Disconnect mains and WAN, log offline operations, restore the network, verify idempotent reconciliation, and record the observed load, runtime, data-integrity results and failure modes. No real retail payment processing in this test.
+
+---
+
+## Addendum C — Incremental backups and weekly OH SHIT tests
+
+**Captured:** 2026-11-24  
+**Status:** Design proposal, not deployed or benchmarked.  
+**Revised scope:** **Data continuity**, not powering an entire retail business or physical site. The battery-backed node protects scoped data/IT services.
+
+### Principle
+
+A successful backup job is not evidence of a successful recovery. Pair incremental backup and transaction-log preservation with **weekly automated, isolated disaster-recovery rehearsals**. Run the deliberately destructive steps only against disposable test instances.
+
+### Candidate workflow
+
+1. Inventory protected datasets, application dependencies, schemas, backup policies and the latest known recovery points.
+2. Create or verify a consistent base backup, subsequent incrementals and continuous database WAL/log archives as appropriate. Monitor recoverability of the complete chain, not just each file.
+3. Restore a **selected recovery point** into an isolated scratch environment, with no route back to production writes.
+4. Launch the restored database/application and execute health checks, structural checks and small known-answer queries against synthetic or appropriately handled test data.
+5. Validate object counts, manifest/hashes when applicable, selected business invariants, idempotency and replay semantics; distinguish exact-point-in-time recovery from later transaction reconciliation.
+6. Measure recovery time, actual restored data timestamp, gaps, dependencies, errors and manual interventions.
+7. Record test start/end, backup-chain identifiers, dataset and code Git revisions, snapshot/WAL checkpoint, observed RTO/RPO, test result and evidence pointers.
+8. Destroy/reset sandbox, cleanly report the outcome and alert on failure. Preserve immutable report history and keep original production backups untouched.
+
+### Cadence and tiers
+
+- **Incremental backups:** Frequency based on measured RPO; frequency alone does not prove consistency.
+- **Continuous WAL/transaction archival:** For eligible databases where point-in-time recovery is required.
+- **Weekly OH SHIT test:** Automated restoration and end-to-end verification of one or more representative workloads, rotating recovery points and failure scenarios.
+- **Periodic full recovery exercise:** Rehearse complete application dependencies, identity, network access, cold startup and human handoff. One green database-restore check does not prove business-wide continuity.
+
+### Evidence artifact sketch
+
+```yaml
+# SYNTHETIC EXAMPLE — not an executed test
+test_id: DRP-EXAMPLE-0001
+result: not_run
+target: isolated-restoration-sandbox
+dataset: sample-postgres
+backup_chain: placeholder
+recovery_point_requested: null
+recovery_point_actual: null
+observed_rto_seconds: null
+observed_rpo_seconds: null
+integrity_checks:
+  restore_completed: null
+  database_started: null
+  consistency_passed: null
+  application_query_passed: null
+provenance:
+  manifest_revision: null
+  source_backup_manifest: null
+```
+
+### Failure modes the tests should catch
+
+Broken incremental chains; missing WAL segments; corrupt archives; absent encryption keys; unrecoverable permissions; incompatible software versions; oversized restore times; unavailable storage; undeclared dependencies; silent partial synchronization; data-level corruption despite a healthy container; and disaster-time saturation when multiple customers need recovery simultaneously.
+
+### Design caveats
+
+- A **10 kWh** battery is a finite, separately tested bridge for protected IT power; it does not replace backups or guarantee a recoverable state.
+- Ensure the recovery sandbox cannot sync stale or test writes back into the authoritative store.
+- Validate restores with least-privilege credentials and retain secrets outside public Git.
+- A green automated restore is necessary evidence, not a guarantee of availability in every incident.
+- The service should sell **measured, repeatable recoverability**, not an unqualified promise of zero downtime.
+
+**Working name:** DERP Continuity — *Weekly OH SHIT Recovery Assurance.*
