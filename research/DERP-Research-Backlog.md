@@ -689,3 +689,17 @@ ready : HTTP 200
 **Next:** Inspect Go Money v1.8.0 frontend hosting options and API routes, choose easiest working dashboard; then plan H: migration and durable service, while preserving separate THOTH DB and Git-based DERPBooks integration.
 
 **Status:** Backend health/readiness verified, financial frontend and VERN integration not deployed.
+
+## 2026-11-24 — DERPBooks visualization-first, no-manual-entry workflow priority
+
+**User direction (verbatim):** “this is a cool project, I like the modularity.Yeah we need the front end, I'd say its not nearly as important as the visualization, but I don't want ot type shit in”
+
+**Decision / priority:** Treat Grafana-based financial visualization and automatic source-document ingestion as priorities over hand-operated UI data entry. Go Money's native frontend remains desirable for administration, exceptions, corrections and fallback, but the daily workflow must not require manually transcribing bank statement transactions or payroll values.
+
+**Proposed flow:** Original LCC paycheck PDF and Huntington statement PDF → private document inbox → Python layout-specific extraction/ETL → typed normalization, arithmetic reconciliation, duplicate detection, provenance linkages and review exceptions → supported Go Money API/import operations → THOTH PostgreSQL `money` database → existing THOTH Grafana dashboards. A later VERN adapter can support conversational queries and corrections. Keep raw source documents and any financial values outside the public repo; preserve unmodified transactions and their provenance separately from normalized descriptions and categories.
+
+**Engineering constraint:** Verify Go Money v1.8.0's actual account, double-entry transaction and import semantics before implementing adapters or claiming PDFs are supported natively. Do not use direct SQL writes as a substitute for its accounting API. Never conflate planned budget entries with observed bank transactions.
+
+**Current verified deployment:** Go Money v1.8.0 backend running in foreground from `E:\dls` on INFINITY, THOTH PostgreSQL reachable with dedicated database/role, both ops `/health` and `/ready` confirmed HTTP 200. Native frontend, Grafana finance dashboards, PDF ingestion and VERN connector are **not** implemented yet.
+
+**Status:** Workflow preference captured, implementation proposed.
