@@ -113,3 +113,11 @@
 - **Observation reported by user:** Power monitoring data extends back to **October 10** (year and dashboard/data-source metadata not separately supplied in this message; likely referring to 2026 given discussion date, but do not treat as independently verified).
 - **Status:** User-reported telemetry retention boundary / historical evidence lead, not yet confirmed by query or Grafana metadata. Does **not** establish the original dashboard creation date or the date collection first began.
 - **Next:** Check power-series earliest timestamp, datasource retention and dashboard creation history, and compare with Nest and HORUS records.
+
+### 2026-11-24 — Nest start date clarified
+
+- **User's wording:** “we started with nest on 10/15”
+- **Reported date:** Nest work began **October 15**; presumed year 2026 based on conversational context, not independently corroborated.
+- **Reconciliation:** Earlier user report states power telemetry reaches back to **October 10**. Thus the reported power-data date predates the reported Nest start by five days, if both are from 2026. The working account “Nest → smart plugs” cannot be assumed to describe the initial start of power-data collection.
+- **Status:** User-reported historical date anchors; original configuration dates, earliest telemetry timestamps and the creation date of the first Grafana dashboard remain unverified.
+- **Next:** Retrieve dated Nest setup messages and earliest smart-plug/power ingestion records; distinguish data collection, dashboard creation and Google-fee discovery.
