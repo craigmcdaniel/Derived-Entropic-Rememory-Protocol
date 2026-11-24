@@ -30,6 +30,7 @@ A short record of the cross-model review exchange, tied to commits so each step 
 - Agreement between the two reviewers is not independent verification, because both read the same files.
 - ChatGPT marked claim 5 as stale and claims 8 and 9 as not independently verified; see its note.
 - Source records for operational results (terminal output, screenshots) are not in Git.
+- The "Source" column above comes from note content. Git's author field shows the owner's name on the commits recorded as ChatGPT's, so it cannot confirm which assistant wrote them.
 
 ## Reviewer retrieval test — TEST DATA
 

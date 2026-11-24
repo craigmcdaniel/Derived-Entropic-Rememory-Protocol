@@ -29,6 +29,18 @@ About 40 Markdown files (about 418 KB) covering handoff architecture, provenance
 - **PASS (reported result):** ChatGPT retrieved the exact Experiment 1 flag, correctly identified fictional statement B, and supported A and C; the review was scored as a pass for discovery, attribution, and avoiding hallucination, based on the assistant's disclosed response rather than an independently verified tool trace.
 - **LIMITATION (test design):** ChatGPT reported starting at `README.md` but locating the results and evidence through commit history and patches, not a README-to-results link chain (no such README link existed); the descriptive commit message and public patch exposed the target, so this demonstrated commit discovery rather than the intended link traversal. A neutral-message, linked, history-controlled retest remains proposed, not completed.
 
+## Three experiments, kept separate
+
+Framing from the owner–ChatGPT discussion on 2026-11-24 (pasted into the Claude session); table adapted by Claude.
+
+| Experiment | Objective | Status |
+|---|---|---|
+| 1 — Persistence and portability | Can Obsidian and Git preserve usable context between AI systems? | Demonstrated, provisionally (one run, one owner, two models) |
+| 2 — Repository discipline | Can multiple assistants maintain that context without creating disorder? | Not yet tested |
+| 3 — Indexed retrieval | Does SQLite improve reconstruction over well-organized Markdown? | Proposed |
+
+**Credit boundary:** Experiment 1 exercised plain Markdown in Git, read and written through a GitHub connector. Obsidian is the owner's editing and linking workspace; no model used it, so the experiment gives it no credit beyond the owner's own reports. Git preserved the sequence of changes, corrections, and reviews.
+
 ## Findings
 
 **Worked**
@@ -61,9 +73,35 @@ The notes about the notes became part of the subject. Each review added document
 - A public/private split and a pre-commit check for addresses and credentials.
 - The index test from the [Index Broker Design Proposal](./Index-Broker-Design-Proposal-2026-11-24.md), including a file-only baseline.
 
+## Experiment 2 — proposed pass/fail criteria (OPEN, set before running)
+
+**Status:** PROPOSED by Claude, not adopted. The owner sets the thresholds; the numbers are starting suggestions. Fix them before the run begins and record any later change as a dated amendment.
+
+**Question:** Can several assistants maintain this context without creating disorder?
+
+**Starting conditions (no large restructuring):** a consistent note format (frontmatter with title, date, status, type), a simple navigation index, and assistants proposing changes on branches that the owner merges. The owner keeps using Obsidian as usual; no plugin or workflow change is required.
+
+**Measures,** taken at a frozen commit at the end of the run. They apply to notes created or changed after the start; legacy notes are excluded unless stated.
+
+| # | Measure | Baseline at Experiment 1 freeze | Proposed pass |
+|---|---|---|---|
+| 1 | Assistant commits made directly to `main` | All of them (at least 4 this session) | 0 |
+| 2 | New or changed notes with a valid status field | 14 of 40 existing files | 100% of new notes |
+| 3 | Broken internal links | Not measured | Measured at start; no increase |
+| 4 | Fresh-model current-state questions answered correctly, with source and "as of" date | Not measured | At least 4 of 5, against a key written first and withheld |
+| 5 | Active logs whose Current State predates their latest entry | Not measured (the backlog has no Current State block) | 0 |
+| 6 | Internal addresses or credentials in new public commits | 27 address matches in the backlog | 0 |
+| 7 | Assistant commits identifiable as such (author or trailer) | Claude's 3 are; commits recorded as ChatGPT's carry the owner's author name | 100% |
+
+**Controls:** write the answer key before the run and withhold it from the model under test; record model, date, tools, and files opened for each trial; use a grader other than the model that designed the test where possible (in Experiment 1 one model did both).
+
+**Out of scope:** indexing and SQLite (Experiment 3), and any rewrite of existing history.
+
 ## Boundaries
 
 - Reviews by other models are feedback, not independent verification.
+- The owner uses Obsidian but did not use the app on 2026-11-24 (owner-reported). The exchange between models ran through the repository, not through Obsidian.
+- Git author names do not separate ChatGPT from the owner. Attribution of those commits comes from note content, not from the author field.
 - Operational results recorded in the repo (the DERPBooks pipeline) are user-reported and were not reproduced by either reviewer.
 - Counts and size estimates are Claude's and approximate.
 
