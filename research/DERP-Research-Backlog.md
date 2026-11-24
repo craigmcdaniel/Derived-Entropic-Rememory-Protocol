@@ -530,3 +530,35 @@ money|money
 **Next:** Safely back up `/etc/postgresql/18/main/pg_hba.conf`, add specific `host money money 192.168.4.189/32 scram-sha-256` rule, validate rule parsing, reload PostgreSQL (not restart), then validate connectivity and app configuration. Preserve Metasploit/NetBox services.
 
 **Status:** PostgreSQL provisioning confirmed; remote access and Go Money server still pending.
+
+## 2026-11-24 08:33 EST — Go Money PostgreSQL HBA access rule added and reloaded
+
+**Evidence:** User-pasted THOTH terminal output after suggested HBA modification script.
+
+**Verbatim key output:**
+```text
+=== DERPBOOKS POSTGRESQL ACCESS ===
+
+=== BACKUP ===
+Backup: /etc/postgresql/18/main/pg_hba.conf.backup-20261124-083336
+
+=== ADD ACCESS RULE ===
+Rule added
+
+=== RELOAD CONFIGURATION ===
+t
+
+=== VERIFY RULE ===
+ line_number | database | user_name |    address    |  auth_method  | error
+-------------+----------+-----------+---------------+---------------+-------
+         135 | {money}  | {money}   | 192.168.4.189 | scram-sha-256 |
+(1 row)
+
+=== COMPLETE ===
+```
+
+**Confirmed:** THOTH `pg_hba.conf` backup created, specific allow entry for `money` role and database from INFINITY's `192.168.4.189/32` added, PostgreSQL reload returned `t`, `pg_hba_file_rules` parses entry at line 135 without error. Existing Metasploit/NetBox entries were not intentionally modified. SCRAM login of `money` user and end-to-end Go Money application startup still **unverified**.
+
+**Upstream finding from project architecture docs:** `go-money-server` is backend-only; `go-money-full` Docker image includes web frontend. Earlier suggestion that native server binary alone would provide a browser financial UI needs correction. Go Money `DB_HOST`, `DB_PORT`, `DB_DB`, `DB_USER`, `DB_PASSWORD`, and `DB_SSL_MODE` are environment settings; verify against v1.8.0 release configuration before final setup. Frontend delivery may require separate build or `go-money-full` container, so don't promise native Windows GUI from server exe.
+
+**Next:** Verify `money` credential by authenticating locally on THOTH via TCP loopback, then from INFINITY with env settings, ensuring secrets not printed or committed. No passwords in Git.
