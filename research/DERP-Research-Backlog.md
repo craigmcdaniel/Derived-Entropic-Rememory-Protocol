@@ -921,3 +921,17 @@ commit   : 90ffed056f0884267356c12a0eeb72a022af53f1
 **Next:** Connect existing THOTH Grafana 13.2.3 at `http://192.168.5.83:3000` to the local THOTH PostgreSQL `money` database using host `127.0.0.1:5432`, role `money_report`, and private credential from `/home/thoth/derpbooks/money-grafana-password`; initial SSL mode can match loopback-only database access. Grafana should not use PostgreSQL owner `money` or PostgreSQL superuser. If datasource Save & test fails, validate `money_report` TCP password login from THOTH first. Initial financial reporting contains no verified actual transactions.
 
 **Status:** Table grants verified; Grafana datasource and dashboards not yet created or tested.
+
+## 2026-11-24 — DERPBooks Grafana headless provisioning script prepared
+
+**User request (verbatim):** “good idea using this rather than making our own attempt, this is pretty mature. I don't want to mess iwth grafana GUI thi smorning, write a script. There is an official dashboard”
+
+**Upstream investigation:** In ft-t/go-money tag `v1.8.0` (`e423145`), verified `compose/grafana/provisioning/datasources/datasources.yaml` and reporting SQL examples exist, but Git tree did not contain a bundled dashboard JSON in `docs/reporting/dashboards`. The project's Grafana wiki describes using Grafana and provides queries; its live demonstration is `https://gomoney-grafana.ft-t.dev`. **Do not claim an upstream official JSON dashboard was imported.** Its location/export remains unresolved. Official Grafana documentation supports file provisioning for datasources and dashboards and `$__file{}` secret expansion.
+
+**Script prepared in current conversation:** `provision-derpbooks-grafana.sh`; SHA-256 `3ade12525ac75d07550846a2a95fa3f6e0e222f8d7c60fbdd45024ba16d147cc`. This file was authored as a downloadable conversation artifact, **not yet executed on THOTH and not claimed committed to this Git repository**. It is intended to run under `sudo bash` on THOTH. It verifies the `money_report` TCP credential and SELECT grant; backs up any existing DERPBooks-specific provisioning files; copies reporting password from `/home/thoth/derpbooks/money-grafana-password` to a protected Grafana-readable file; creates datasource UID `derpbooks_pg` for local `money` PostgreSQL; creates a separate dashboard provisioning provider and a **custom starter** overview dashboard UID `derpbooks-overview`, showing counts and transaction activity rather than pretending to be upstream official dashboard. It restarts **only Grafana** to load the datasource; no other dashboard provisioning is intentionally changed. Link target when deployed: `http://192.168.5.83:3000/d/derpbooks-overview`.
+
+**Source status:** v1.8.0 official demo and reporting examples confirmed; official importable dashboard not located. GitHub provenance checkpoint must distinguish script preparation from deployment success.
+
+**Next evidence:** User execution output (including datasource provisioning logs and dashboard rendering); if errors, inspect Grafana journal and roll back using timestamped backup. Later import upstream dashboard if its exact verified JSON file or ID is identified. No actual financial records imported yet.
+
+**Status:** Headless setup **prepared**, not deployed.
