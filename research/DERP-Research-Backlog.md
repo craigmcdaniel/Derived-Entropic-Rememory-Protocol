@@ -1046,3 +1046,33 @@ The user reported that the 2026 bulk payroll import **worked** and that historic
 **Not yet independently audited:** exact total/unique payroll rows, detail table count, all reconciliation totals, and idempotence after import. Do not claim those verified solely from the dashboard view. Do not rerun bulk import without need; avoid unnecessary shell friction.
 
 **Privacy:** No individual payroll financial figures or personal data in this public research log.
+
+## 2026-11-24 — DERPBooks historical payroll dashboard — first design review
+
+### Confirmed working state
+- **DERPBooks** runs Go Money v1.8.0 on INFINITY with THOTH's native PostgreSQL 18.6 `money` database and Grafana 13.2.3 reporting on THOTH.
+- One initial payroll record was imported into `derpbooks.payroll`, with a verified zero gross-minus-deductions-minus-net difference.
+- A subsequent prepared bulk-import SQL file was transferred from INFINITY to THOTH. The user subsequently confirmed that the historical payroll dataset **populated the Grafana dashboard**; prior commands to independently verify final row counts encountered PowerShell/SSH quoting and sudo TTY difficulties. Treat the exact count and full reconciliation audit as **pending verification**, not as established by the visualization alone.
+- Grafana datasource `derpbooks_pg` now works after correcting the PostgreSQL default database to `jsonData.database: money` (previously set only at datasource top level). The existing file-provisioned dashboard `derpbooks-overview` displays account/transaction counts, current payroll values, paycheck history, and summary data. The dashboard remains independent of Go Money's main transaction ledger.
+- In a user-supplied screenshot after the user removed their test ledger transaction, the dashboard showed **7 accounts and 0 active transactions**, while historical payroll charts remained populated. This is the expected separation of payroll records from the Go Money ledger. The user's historical chart covers multiple payroll periods with independent gross, net, and deduction series.
+- **Evidence preservation:** User screenshot showed the post-import historical-payroll Grafana dashboard with data populated. This is a visual confirmation of successful reporting, not a complete database audit.
+
+### Issues and design backlog — proposed, not yet implemented
+1. **Deduplication and revisions:** Use document content hashes plus stable paycheck identifiers; distinguish identical exports from corrected paystubs sharing the same date. Avoid overwriting earlier evidence.
+2. **Current versus YTD metrics:** Preserve the measurement period and fiscal/calendar year. YTD snapshots must never be aggregated as independent payments, and resets around January require explicit handling.
+3. **Partial and heterogeneous documents:** Some exported paystub detail pages are truncated while dated PDF stubs have itemized rows. Distinguish missing/unreadable fields from true zeros; preserve parsing confidence and reconciliation status.
+4. **Accounting separation and reconciliation:** Payroll detail is not a bank deposit. Import only matched net deposits into Go Money through its application/API; do not write directly to accounting tables or double-count payroll.
+5. **Historical taxonomy:** Earnings types, rates, tax/deduction codes, benefit and employer contribution categories change over long periods; preserve raw labels and normalized mappings with effective dates.
+6. **Normalized payroll schema:** Evolve from summary table to paycheck, earnings, taxes, deductions, benefits/employer contributions, source documents and extraction/provenance records. Maintain backwards-compatible dashboard views.
+7. **Temporal provenance:** Track source-file hash, pay date, pay period, document capture date, parser version, ingest timestamp, later corrections, and certainty. Support replay/reprocessing and auditable corrections.
+8. **Dashboard presentation:** Do not abbreviate currency where exact cents matter; show a coherent range and improve distinctions among per-period, YTD, and cumulative measures. Current charts are functional but preliminary.
+9. **Operational ergonomics:** Reduce manual file shuffling and PowerShell/SSH quoting pitfalls; plan a one-command, idempotent import/verify pathway and report success only after actual DB verification.
+10. **Archive retrieval (deferred):** LCC Employee Self-Service hash-route `#/payStubSummary/list/YYYY` accepts direct year changes (user tested 2012→2011). The historical 2011–2026 archive automation is a future research topic; the backend request/range support has **not** been verified.
+
+### Design principles
+- PostgreSQL on THOTH is private financial-data storage and analytical source of truth for payroll detail; Go Money remains the accounting-ledger owner.
+- Grafana uses `money_report` for read-only access.
+- Keep personally identifiable documents, passwords, paycheck figures, and financial exports out of the public research repository. Store only architecture, methods, milestones, and non-sensitive observations in Git.
+- Append evidence and preserve prior checkpoints rather than rewriting history. Distinguish confirmed, inferred, and proposed states.
+
+**Status:** WORKING HISTORICAL PAYROLL INGESTION + DASHBOARD; FIRST DESIGN-REVIEW ISSUES RECORDED.
