@@ -662,3 +662,30 @@ LocalAddress LocalPort  State
 **Next:** From INFINITY check `http://localhost:52056/health` and `/ready` (should return HTTP 200), then assess frontend delivery before deciding native Windows vs Docker for full UI.
 
 **Status:** Process and port listeners confirmed; URL-level HTTP probe pending.
+
+## 2026-11-24 — Go Money HTTP health and readiness confirmed; VERN interface separation
+
+**Source:** User-pasted INFINITY PowerShell 5.1 live process check and local HTTP requests; user explicitly proposed using VERN as an independently adaptable interface to Go Money's backend.
+
+**Verbatim key evidence:**
+```text
+ProcessId      : 26104
+Name           : go-money-server.exe
+ExecutablePath : E:\dls\go-money-server_1.8.0_windows_amd64\go-money-server.exe
+
+LocalAddress LocalPort  State
+------------ ---------  -----
+::               52056 Listen
+::               52055 Listen
+
+health : HTTP 200
+ready : HTTP 200
+```
+
+**Confirmed:** Windows Go Money server v1.8.0 was running on INFINITY and independently verified listening on ports 52055 and 52056. `Invoke-WebRequest` on `http://localhost:52056/health` and `/ready` both returned HTTP 200, establishing health and readiness at time of test. THOTH PostgreSQL `money` database connection was verified in prior startup logs. MCP remained temporarily disabled (`MCP_DISABLE=true`). This is foreground execution from E:\dls, **not** a persistent Windows service and not yet relocated to H:.
+
+**Architectural idea (user wording):** “the server exists doing its shit ... how we display it is our own VERN, kwim”. Use Go Money as preexisting accounting system/backend and VERN as a separate flexible UI / ChatOps interface; use DERP as provenance/evidence system and planned document ingestion as adapter. Go Money has its own frontend that can be reused initially; a bespoke VERN presentation is **proposed**, not already built. Prefer supported API boundaries, not direct mutation of internal Go Money DB tables.
+
+**Next:** Inspect Go Money v1.8.0 frontend hosting options and API routes, choose easiest working dashboard; then plan H: migration and durable service, while preserving separate THOTH DB and Git-based DERPBooks integration.
+
+**Status:** Backend health/readiness verified, financial frontend and VERN integration not deployed.
