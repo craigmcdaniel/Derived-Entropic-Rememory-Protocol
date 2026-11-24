@@ -42,3 +42,13 @@
 - Institutional and home-lab details reviewed for publication
 - Outcome grounded in logs, code or demonstration
 - Corrections preserved
+
+### 2026-11-24 — CHARON origin story: retrospective Sprint 1
+
+- **Evidence type:** First-person retrospective recollection, recorded on 2026-11-24. Original event dates **not yet established** from the archive.
+- **User's wording:** “I remember most of it. Charon started out just with 16 gigs of ram and hosting blue iris with local inference. After upgrading it, one day while installing kali on it, in vmware, I was like, this sucks, I want server. I wonder if we can install server in a vhdx and make it portable like I thought I read, then we did it, and I posted in ethical hacking class about the vhdx and how it makes images portable as fuck. That was basically sprint 1 -4d”
+- **Sequence as remembered:** (1) CHARON initially had 16 GB RAM and ran Blue Iris with local inference; (2) hardware was upgraded (specifications/date pending); (3) installing Kali in VMware prompted a desire to move to a server OS; (4) explored installing Windows Server into a portable VHDX; (5) completed a VHDX-based installation; (6) discussed the portability of VHDX images in ethical hacking class.
+- **Interpretation:** User refers to this formative sequence as **Sprint 1**; suffix “-4d” preserved above, duration **not independently established**.
+- **Status:** **Historical recollection, uncorroborated** until dates, original discussion, hardware changes, boot configuration and class post can be traced to source records. Do not assume this is the later INFINITY VHDX migration.
+- **Portfolio relevance:** Motivating problem → architecture investigation → implementation → knowledge sharing. Potential first-person systems-engineering case study once the archive corroborates details.
+- **Next:** Search original converted ChatGPT history for CHARON's early RAM/Blue Iris configuration, VMware Kali discussion, VHDX installation and class commentary. Attach source references and correct chronology without overwriting this recollection.
