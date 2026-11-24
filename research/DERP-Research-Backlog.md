@@ -266,3 +266,17 @@ A minimal vertical slice would be browser upload → PDF validation → hash and
 **Status:** File inspection confirmed in current ChatGPT analysis environment; no DERPBooks service, SQL schema, worker, upload endpoint or database ingestion is deployed by this inspection. No private financial content was committed.
 
 **Next decision:** Introduce a staging/review state for extracted pay records, then promote approved or rules-validated records into the financial ledger. Determine precise approval policy after testing a representative set of differing paycheck layouts.
+
+## 2026-11-24 — DERPBooks initial source families: LCC and HNB
+
+**User's wording:** “all the check stubs are from LCC only. Financial statements such as banking and what not are usually from HUNTINGTON national. Or HNB. I can share those too.”
+
+**Inventory classification:** Source-format constraint confirmed by user, not evidence of a fully surveyed corpus.
+
+- **Payroll family:** Lansing Community College (LCC) pay statements exclusively, according to the user. Begin with a specific LCC PDF transformer and validate across multiple periods before assuming perfect consistency.
+- **Banking family:** Huntington National Bank (HNB) statements are the typical banking source. Await a sample before asserting statement layout, fields, text extraction quality, or parsing rules.
+- **Common ingestion architecture:** Both arrive through file/upload adapters into a shared preserve/hash/extract/stage/review pipeline. Source-family-specific transformers produce typed records in a common SQL layer with source-document references and correction history.
+- **Financial reconciliation opportunity (proposed):** Match approved net-pay deposit amounts to later bank transactions by amount/date and supporting references; do not infer matches or post transactions without verifying source evidence.
+- **Privacy:** Sample PDFs and extracted personal financial content stay outside this public Git repository. Only sanitized format findings, schema decisions, implementation and tests belong here.
+
+**Next inventory step:** Inspect one HNB statement as the second source family, then decide its minimum SQL entities and validation rules. No HNB statement has been provided in this turn; no HNB parsing has been performed.
