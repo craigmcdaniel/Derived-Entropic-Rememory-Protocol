@@ -717,3 +717,30 @@ ready : HTTP 200
 **Next read-only checks:** Table row counts (do not print account numbers or monetary transaction details), relevant import/history/double-entry column metadata and constraints, and potentially default categories/accounts. Then plan a separate read-only PostgreSQL role for Grafana with narrow grants or explicitly defined views; do not give Grafana the owner/\`money\` role. Investigate official APIs for importing validated PDF-derived data; do not directly write Go Money's internal tables.
 
 **Status:** Go Money schema creation verified. No Grafana finance datasource/dashboard or PDF ingestion deployed.
+
+## 2026-11-24 — Go Money Angular frontend source checkout confirmed on H:
+
+**Evidence:** User-pasted INFINITY PowerShell 5.1 transcript and THOTH schema-audit output.
+
+**Confirmed frontend source checkout on INFINITY:**
+```text
+git version 2.52.0.windows.1
+node v24.22.0
+npm 11.19.1
+Cloning into 'H:\DERPBooks\go-money'...
+Note: switching to 'e423145d3058fc81d0d9f3592f3575655df8f219'.
+e423145 feat(mcp): import dedup and delete tools, clearer import errors (#128)
+angular.json        5322
+package-lock.json 646433
+package.json        2323
+```
+
+**Reconciliation:** The upstream Go Money repository v1.8.0 successfully cloned into `H:\DERPBooks\go-money`, detached HEAD at release tag commit `e423145`. Angular source manifest files are present at `frontend\`. Node 24/npm 11 and Git available. No evidence yet that `npm ci` ran, a frontend was built, served or connected.
+
+**Companion THOTH accounting model audit (user-uploaded transcript):** `pg_stat_user_tables` estimated row counts included `accounts=5`, `currencies=166`, `daily_stat=10`, `migrations=30`, `transactions=0`, `double_entries=0`, `users=0`, `import_deduplication=0`. These are estimates, not transactional exact counts. `double_entries` has `transaction_id`, `account_id`, debit flag, base currency amount, transaction date; `import_deduplication` has `import_source`, `key`, `transaction_id`, creation time. PostgreSQL `pg_constraint` query returned **zero foreign key constraints** in `public`; therefore rely on application API/invariants, not direct SQL writes. No actual financial transactions imported.
+
+**Upstream v1.8.0 frontend details:** Angular app under `frontend`; `package.json` scripts `start: ng serve` and `build: ng build`. `frontend/src/app/configuration/prod.json` and `dev.json` include `http://localhost:8000/` host defaults that do not match current INFINITY backend gRPC/Connect listener on port 52055. The build or launch must align app transport configuration; avoid claiming frontend works until actual browser/API handshake succeeds.
+
+**Next:** `npm ci` in `H:\DERPBooks\go-money\frontend` only (keep packages and build on H:); inspect Angular client transport host/config mapping and arrange browser frontend connection via correct host/port, likely port 52055. No additional PostgreSQL/schema changes required now.
+
+**Status:** Frontend source and prerequisites confirmed; install/build/serve pending.
