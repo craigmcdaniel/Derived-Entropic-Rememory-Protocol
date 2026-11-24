@@ -592,3 +592,24 @@ money|money
 **Next:** Confirm Go Money v1.8.0 configuration environment keys in upstream source/release documentation; configure INFINITY's backend to target `192.168.5.83:5432`, with password delivered privately and not logged, and capture startup output. Distinguish backend server from web frontend.
 
 **Status:** Database-side local login CONFIRMED; application remote login unverified.
+
+## 2026-11-24 08:36 EST — Go Money Windows backend connects to THOTH, MCP docs packaging blocker
+
+**User-pasted Windows PowerShell startup evidence (Go Money v1.8.0, binary commit e423145):**
+```text
+2026-11-24T08:36:04-05:00 HTTP server started on port [52056]
+2026-11-24T08:36:04-05:00 setup postgres database
+2026-11-24T08:36:04-05:00 ========= DB [192.168.5.83] [money] ============
+2026-11-24T08:36:04-05:00 [Db] start migrations
+2026-11-24T08:36:05-05:00 SELECT * FROM "system_configurations" WHERE id = 'jwt_private_key' ... record not found
+2026-11-24T08:36:05-05:00 jwt private key is empty. Generating new key and storing in database
+2026-11-24T08:36:05-05:00 path ./mcp Reading mcp docs
+2026-11-24T08:36:05-05:00 fatal: GetFileAttributesEx .: The system cannot find the file specified. failed to read mcp docs
+Exit code: 1
+```
+
+**Reconciliation:** Native Windows server started only transiently; no Windows service or automatic startup was installed. Remote DB login succeeded and database migrations began, making durable changes on THOTH's dedicated `money` database. A missing MCP docs directory prevented startup completion. Upstream v1.8.0 source `pkg/configuration/types.go` confirms `MCP_DISABLE` defaults false and `MCP_DOCS_DIR` defaults `./mcp`; `pkg/mcp/docs.go` walks markdown files beneath that directory. Next quick test: set `MCP_DISABLE=true` before launching with DB environment; re-enable with docs later. Source: https://github.com/ft-t/go-money/tree/v1.8.0.
+
+**User clarification request:** Asked whether the command actually dropped a server. Answer: only started a temporary process listening on ops HTTP port 52056, then exited code 1; did not deploy a persistent Windows service. Server data/schema changes persist in THOTH PostgreSQL.
+
+**Status:** Database connected, startup blocked at optional MCP documentation; no persistent backend running.
