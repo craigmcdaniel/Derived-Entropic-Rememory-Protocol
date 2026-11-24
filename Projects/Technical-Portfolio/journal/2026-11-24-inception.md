@@ -60,3 +60,11 @@
 - **Historical recollection:** The TryHackMe learning path had reached Nmap before a period of inactivity. The length and exact placement of that pause relative to CHARON's hardware upgrade and VHDX installation are not yet verified.
 - **Status:** First-person recollection, pending archive reconciliation.
 - **Editorial rule:** Do not conflate completing the Nmap material with completing TryHackMe, or assert that the pause caused the CHARON redesign.
+
+### 2026-11-24 — From TryHackMe Nmap to home-LAN discovery
+
+- **User's wording:** “we started doing our own nmaps on our own lan then”
+- **Sequence clarified:** After reaching Nmap in TryHackMe and taking a break from that learning path, the user began applying Nmap to their own LAN. This is practical exploration of their own environment; no specific discovery or scan output has been supplied in this recollection.
+- **Status:** Historical first-person recollection. Exact scan dates, commands, discovered hosts and relationship to CHARON's server migration remain to be reconciled against original records.
+- **Portfolio significance:** Transition from a guided exercise to self-directed network discovery, later informing infrastructure mapping and lab expansion.
+- **Next:** Find archived scan results or conversation records to reconstruct what the initial LAN scans actually revealed.
