@@ -89,6 +89,7 @@ flowchart TD
 - [Container Security Labs](./Projects/Container-Security-Labs/README.md) — container boundaries and documented lab work.
 - [Matryoshka Containment Unit](./Projects/Container-Security-Labs/Matryoshka-Containment-Unit-Checkpoint-2026-11-23.md) — evidence-first case study.
 - [Peanut Butter and Jelly Machine](./Projects/Peanut-Butter-and-Jelly-Machine/README.md) — reusable workflow thought experiment.
+- [Dios de Ignatio de Portfellatio — Technical Portfolio](./Projects/Dios-de-Ignatio-de-Portfellatio/README.md) — public, provenance-driven portfolio construction and build journal.
 - [Research backlog](./research/DERP-Research-Backlog.md) — experiments and unresolved questions.
 - [Archive strategy](./research/Conversation-Archive-Strategy.md) — source provenance and derived records.
 
