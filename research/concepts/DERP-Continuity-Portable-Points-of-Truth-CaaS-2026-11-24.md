@@ -308,3 +308,47 @@ Use **synthetic orders and inventory data** on an isolated local service with no
 **Hypothesis:** A narrow, append-only edge working set plus explicit reconciliation can preserve selected business operations across temporary WAN failure. **Not yet proven** for any particular customer, POS platform, or outage scenario.
 
 **Architectural consequence:** Continuity now has a sixth optional, tightly scoped function: **disconnected edge execution and reconciliation**, spanning execution/data/evidence planes. This must remain separate from guaranteed failover and physical power continuity.
+
+---
+
+## Addendum B — Battery-backed continuity appliance
+
+**Captured:** 2026-11-24  
+**Status:** Proposed power-resilience bundle; no field installation, customer deployment, certified product selection, or runtime test.
+
+### Core idea
+
+Bundle a **nominal 10 kWh battery bank**, appropriately rated inverter/transfer equipment, a ZBook access broker, a scoped offline-capable datastore, protected LAN switching, and optional 5G failover into a deployable DERP Continuity kit. The objective is to preserve **critical IT and authorized back-office workflows** through a combined local power and WAN interruption. It does not promise operation of commercial cooking, refrigeration, HVAC, or other high-load equipment.
+
+**Boundary:** Battery-backed compute/connectivity is not full-site business continuity. Physical operations require separately engineered power, safety, and service dependencies.
+
+### Illustrative runtime model
+
+Usable AC energy is assumed to be **8 kWh** from a nominal 10 kWh system after battery reserves and losses. This is a planning assumption, not a product guarantee.
+
+| Average continuous load | Illustrative runtime |
+|---|---:|
+| 200 W | 40 h |
+| 400 W | 20 h |
+| 800 W | 10 h |
+| 1,600 W | 5 h |
+
+Actual runtime depends on usable depth of discharge, battery health, temperature, inverter efficiency, auxiliary losses, startup surge and equipment load. Capacity (kWh) must not be confused with power/inverter rating (kW). Size for measured continuous draw and surge demand.
+
+### Required engineering decisions
+
+- Separate protected **IT circuits** from heavy equipment; define which loads are actually supported.
+- Use appropriate **listed, compatible battery/inverter/transfer equipment**; verify installation requirements and local authority approval (applicable electrical/fire codes and standards such as NFPA 855 and UL 9540 where relevant).
+- Provide clean power transfer for devices requiring uninterrupted sessions and documented low-battery shutdown.
+- Include power-state telemetry: battery state of charge, rate of discharge, estimated remaining runtime, inverter faults, critical load measurements, and successful shutdown/recovery evidence.
+- Specify independence of **cellular uplink** and local router/switch power; mobile coverage and carrier operation are not guaranteed during regional outages.
+- Define the permitted offline dataset and pending-operation journal, especially for interrupted WAN and POS/payment operations.
+- Rehearse outage, intermittent power, exhausted battery, failed inverter, loss of cellular service, return of utility power, and safe reconciliation after reconnection.
+
+### Commercial packaging hypothesis
+
+Offer **DERP Continuity PowerPack** as an optional tier for customers requiring local critical-workflow continuity. Separate battery ownership, installation, monitoring, maintenance, warranty, periodic test charges and eventual replacement in the cost model. Product suitability and economics remain unverified.
+
+### Next evidence-producing test
+
+Meter the actual ZBook + edge datastore + router + switch workload. Power the isolated synthetic environment through a commercially suitable battery system. Disconnect mains and WAN, log offline operations, restore the network, verify idempotent reconciliation, and record the observed load, runtime, data-integrity results and failure modes. No real retail payment processing in this test.
