@@ -991,3 +991,13 @@ HTTP 200
 **Action:** No rollback or rerun. Next read-only check actual PostgreSQL datasource from Grafana dashboard or SQL query. Future shell automation should wait until HTTP `/api/health` responds, not merely `systemctl is-active`, with appropriate delay/timeouts.
 
 **Status:** Grafana service, datasource provisioning and dashboard creation confirmed; SQL panel data binding requires verification.
+
+## 2026-11-24 — DERPBooks payroll model includes full budget-style compensation breakdown
+
+**User decision:** Wants to retain full payroll-stub details in DERPBooks, as they would in a personal Excel budget; does **not** want to discard gross earnings, taxes, employee deductions, employer contributions, or YTD figures simply because only the net deposit appears on bank statements.
+
+**Source:** User uploaded a current LCC payroll-detail PDF with pay date 2026-11-13, pay period 2026-10-25 through 2026-11-07. This exported page is clipped at the start of the earnings section; only aggregate gross, employee deduction, net, employer contribution and YTD totals are extractable. The aggregate payroll equation reconciles. The individual deduction and earnings breakdown is *unavailable in source*, not zero.
+
+**Modeling decision:** Separate `payroll_events` with gross, net, deductions, employer contributions and date provenance, and `payroll_components` for detailed earning, benefit and withholding line items where source permits. Keep reported YTD amounts distinct from current-period ledger movements. Only create the actual net paycheck deposit in Go Money's bank account when correlated to bank evidence; gross pay, deductions and employer contributions are payroll analytics, **not additional cash deposits**. Store detailed personal payroll records privately in THOTH PostgreSQL or encrypted local source files, never public GitHub. Generate stable idempotency keys from pay date, employer and source hash; flag discrepancies rather than silently override values.
+
+**Stage:** Current stub parsed/reconciled in private conversation staging files. No database insert or Go Money API import has yet been confirmed. Next stage build private payroll fact tables/reporting views and automate extraction and reconciliation, then link Go Money bank deposit to payroll event.
