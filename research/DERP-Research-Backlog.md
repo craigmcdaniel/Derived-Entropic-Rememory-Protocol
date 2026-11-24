@@ -1092,3 +1092,11 @@ The user reported that the 2026 bulk payroll import **worked** and that historic
 **Next work:** Parse complete transaction rows across pages and sections, preserve source-document/page and signs, reconcile the sum of parsed activity against each statement's reported credits/debits/fees, stage with stable de-duplication identities, reconcile payroll deposits with paystub net amounts, then import into Go Money's accounting ledger via its API, not direct SQL writes. Avoid duplicate deposits and avoid treating absent statement coverage as zero activity.
 
 **Status:** SIX BANK PDFs ACCEPTED, FILE/STATEMENT PRECHECK PASSED; TRANSACTION-LEVEL INGESTION PENDING.
+
+## 2026-11-24 — DERPBooks bank statement archive gap closed
+
+User supplied replacement private archive `bank(1).zip`. Compared against original six-PDF archive `bank.zip` using SHA-256 of contained PDFs: **all six original documents match byte-for-byte**, plus exactly one new seventh PDF. The added statement spans **2026-05-13 through 2026-06-10**, closing the previously documented missing interval.
+
+**Verified document coverage:** Seven consecutive Huntington statement periods spanning 2026-04-21 through 2026-11-12, with no missing statement periods and no duplicate source-file hashes. This is an archive inventory result, **not** transaction-level extraction or reconciliation. Do not claim ledger completeness until all pages and statement sections have been parsed and their totals independently reconciled.
+
+**Next:** transaction-row parser, per-statement debit/credit/fees reconciliation, source provenance and idempotent transaction staging, payroll matching, and controlled Go Money API import. No private statement data included in this public repository.
