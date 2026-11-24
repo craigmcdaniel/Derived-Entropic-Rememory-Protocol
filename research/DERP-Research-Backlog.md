@@ -364,3 +364,15 @@ A minimal vertical slice would be browser upload → PDF validation → hash and
 **Next action:** Read-only local check for PostgreSQL services, processes, ports and executable locations on INFINITY; then configure or provision an isolated database on H: as suitable, keeping financial data off public GitHub. Do not assert PostgreSQL is installed or Go Money is deployed.
 
 **Status:** Root immediate blocking dependency verified: no PostgreSQL accepting localhost:5432 at application startup; database provisioning still pending.
+
+## 2026-11-24 — Go Money database placement reconsidered: THOTH PostgreSQL
+
+**User evidence:** Full INFINITY PowerShell audit pasted. `Get-CimInstance Win32_Service` matching postgres/pgsql produced no entries; `Get-Process postgres,pg_ctl` no entries; `Get-NetTCPConnection -LocalPort 5432` no entries; `Get-Command psql,pg_ctl,initdb` no entries in PATH. User then explicitly stated **“we have one on thoth”**.
+
+**Confirmed:** Local INFINITY audit did not detect a local PostgreSQL service, process, port 5432 listener or utilities in PATH. **User-reported:** PostgreSQL exists on THOTH. Its running state, host binding, port, version, auth policy, existing DB ownership and remote access remain unverified.
+
+**Architecture proposal (not deployed):** Keep Go Money v1.8.0 server native on INFINITY, connect via network to a separate `money` database and `money` role on existing THOTH PostgreSQL, reuse THOTH Grafana for later DERPBooks reporting. Preserve financial data isolation and credentials outside public Git. No firewall or pg_hba.conf modifications until inspecting existing setup.
+
+**Next read-only evidence collection:** On THOTH, check PostgreSQL service/container identity, listen addresses/port, cluster/database inventory (names only), and network listener. On INFINITY, test `Test-NetConnection 192.168.5.83 -Port 5432`. Then choose an isolated app database and Go Money DB connection configuration; no changes yet.
+
+**Status:** Reuse of THOTH's PostgreSQL proposed; external access not verified.
