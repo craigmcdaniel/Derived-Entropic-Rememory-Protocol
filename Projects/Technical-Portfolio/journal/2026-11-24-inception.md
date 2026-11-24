@@ -105,3 +105,11 @@
 - **Correction:** Retract the assumption that HORUS was the first Grafana dashboard. Preserve it as a candidate, not a confirmed first.
 - **Status:** Historical first-person recollection / tentative chronology. Specific Google service, fee amount, dates, smart-plug brands, and earliest dashboard title are unknown.
 - **Next:** Inspect early ChatGPT/Obsidian archive entries and Grafana dashboard creation metadata for Nest, Google integration costs, smart plugs and HORUS. Establish first *attempt*, first *functioning datasource*, and first *dashboard* separately.
+
+### 2026-11-24 — Power telemetry earliest date recalled
+
+- **User's wording:** “power goes back to 10/10”
+- **Context:** Follow-up to the Nest → Google fee → smart-plug discussion about the origins of Grafana.
+- **Observation reported by user:** Power monitoring data extends back to **October 10** (year and dashboard/data-source metadata not separately supplied in this message; likely referring to 2026 given discussion date, but do not treat as independently verified).
+- **Status:** User-reported telemetry retention boundary / historical evidence lead, not yet confirmed by query or Grafana metadata. Does **not** establish the original dashboard creation date or the date collection first began.
+- **Next:** Check power-series earliest timestamp, datasource retention and dashboard creation history, and compare with Nest and HORUS records.
