@@ -85,3 +85,14 @@
 - **Status:** **Historical recollection / tentative chronology**, not yet verified. “THOTH was built on CHARON” is preserved as stated; the exact VM, container, installation or migration relationship is unknown and must not be inferred.
 - **Working order to test:** CHARON server environment → THOTH built on CHARON → Grafana introduced. The order of domain deployment relative to those events remains unverified.
 - **Next:** Correlate archived conversation timestamps, THOTH installation/deployment records, hypervisor configuration and first Grafana/Prometheus setup. Distinguish the original THOTH from its later standalone Linux-host state.
+
+### 2026-11-24 — Original stack and ZBook Windows Server driver adaptation
+
+- **User's wording:** “we we started all we had was blue iris, and neolink. Then we had to adjust windows server 2025 to work with the zbook, that is why test signing is enabled for the drivers to work. In this caseit was really just the joystick and mousepad, but we also had issues with the bluetooth and sound drivers I think”
+- **Starting services (recollection):** Blue Iris and NeoLink were the original stack, before later observability and distributed components.
+- **Subsequent engineering problem:** Adapt Windows Server 2025 for the HP ZBook hardware. User associates enabled Windows test-signing mode with getting the ZBook's pointing-device drivers working (joystick/pointing stick and touchpad).
+- **Less-certain issues:** Bluetooth and audio driver trouble are recalled tentatively (“I think”); exact symptoms, resolution and whether test-signing was required for them have **not** been established.
+- **Status:** Historical first-person recollection; original dates, driver package names, commands, boot configuration and outcomes require archive or system evidence. Do not generalize that every driver needed test-signing or that this is a recommended production setup.
+- **Chronology note:** The initial Blue Iris + NeoLink baseline and later Server 2025 adaptation are distinct phases; their relationship to the earlier VMware/Kali and VHDX experiment needs reconciliation rather than forced ordering.
+- **Portfolio angle:** Demonstrates hardware/OS compatibility troubleshooting and deliberate trade-offs when running a server OS on workstation hardware.
+- **Next:** Find the earliest Blue Iris/NeoLink references and archived ZBook driver/test-signing diagnostics; distinguish a successful installation from any remaining Bluetooth or sound issues.
