@@ -141,3 +141,28 @@ First milestone: drop a bank statement into a directory and see validated transa
 The user clarified that Copilot should access the **same semantic memory over the Git-backed Obsidian Markdown environment** as ChatGPT or future local models, rather than simply reviewing an exported note. The vault is model-independent persistent knowledge; a rebuildable index and retrieval API supplies source-linked context to multiple agents. Keep Git as the versioned evidence record. Personal Microsoft Copilot, Microsoft 365 Copilot, GitHub Copilot, and an Obsidian plugin named Copilot are different integration targets. Prefer personal over institutional identity for tests, but verify real connector support first. Cross-agent context portability is the proposed success metric.
 
 **Full research note:** [[Multi-Agent-Semantic-Memory-Copilot-2026-11-24]] — architecture, identity boundaries, capabilities, uncertainties, experiment plan. Deliberate overlap with the 04:30 FREYR/SQLite/HTTP brainstorming is retained.
+
+## 2026-11-24 — Inventory interview: immediate work sequence
+
+**Source:** User-directed one-question-at-a-time backlog inventory. **Status:** Priorities selected; task completion not implied. This records the work order rather than asserting specific TryHackMe module names or lab results.
+
+**User direction (verbatim):** “I'd like to fuck around for a bit with check stubs and shit. Then we'll finish up this try hack me, putting it all together in planning and scoping, then there is a review task to recheck and verify the infection or whatnot is ok. then its on to our favorite, coding for penetration. the pthon an dpowershell stuff.”
+
+### Prioritized sequence
+
+1. **FREYR / CraigBooks: paycheck-stub exploration (active next).** Test extraction from an actual paycheck stub, understand gross pay, deductions and net pay, and identify reusable data fields. Treat this as exploration before building full automation. Financial source documents and extracted personal records remain in private storage; this public backlog records only project direction.
+2. **TryHackMe: Planning and Scoping (next).** Complete current room/course exercises. Exact module/task identifier needs to be verified from the user's room before tracking completion.
+3. **TryHackMe: review and verification task (then).** Recheck the infection-related result or state described by the task; scope and wording not yet independently inspected. Do not prematurely classify as verified or assume a live infection.
+4. **TryHackMe: Coding for Penetration Testing (afterwards).** Continue Python and PowerShell training exercises within the course environment.
+5. **DERP Core / VERN: architecture (deferred relative to current sequence).** Preserve the appliance concept, workers and indexes in the research backlog, without initiating additional infrastructure merely to support the first paycheck-stub experiment.
+
+### Inventory state
+
+- **Decision:** User has explicitly ordered these activities.
+- **Confirmed completed:** None established by this interview turn.
+- **Open:** Exact TryHackMe task names, original financial ingestion tests, and practical constraints for the paycheck-stub experiment.
+- **Next interview question:** Determine the first paycheck-stub source format and whether a private local example already exists.
+
+### Editorial boundary
+
+No assumption that the first FREYR experiment must deploy PostgreSQL, Grafana, or a Python service. Extract and reconcile a sample first, then decide what code or storage is justified by the evidence.
