@@ -474,3 +474,34 @@ postgres|t
 **Next safe steps:** Verify INFINITY's actual IPv4 address used to reach THOTH and check upstream Go Money connection configuration. Subsequently create a least-privilege dedicated `money` role/database and narrow SCRAM HBA entry allowing only INFINITY's /32, with backed-up HBA, validate config and reload instead of restarting THOTH PostgreSQL. No changes have been made yet.
 
 **Status:** DB provisioning and HBA change proposed, not executed.
+
+## 2026-11-24 — INFINITY PostgreSQL route source confirmed; optional renumbering deferred
+
+**Evidence:** User-provided INFINITY Windows PowerShell 5.1 `Find-NetRoute -RemoteIPAddress 192.168.5.83` and repeated `Test-NetConnection` output.
+
+**Verbatim decisive evidence:**
+```text
+InterfaceAlias : vEthernet (Infinity Prime)
+InterfaceIndex : 19
+IPAddress      : 192.168.4.189
+NextHop        :
+
+InterfaceAlias : vEthernet (Infinity Prime)
+InterfaceIndex : 19
+IPAddress      :
+NextHop        : 0.0.0.0
+
+RemoteAddress RemotePort TcpTestSucceeded
+------------- ---------- ----------------
+192.168.5.83        5432             True
+```
+
+**Reconciliation:** The observed INFINITY source address for direct traffic to THOTH is `192.168.4.189`; THOTH PostgreSQL listens at `192.168.5.83:5432`, TCP verified. A candidate least-privilege PostgreSQL HBA entry is `host money money 192.168.4.189/32 scram-sha-256`; not yet applied. THOTH existing `metasploit` and `netbox` databases/roles must remain intact.
+
+**User consideration:** May later change INFINITY's main IPv4 address to `192.168.4.2` for ease of use; no renumbering has been performed, uniqueness/reservation of `.2` is unverified. Recommendation: defer address change until the Go Money connection is validated, then revisit IP/DHCP/AD/DNS references and HBA rule together.
+
+**Cultural aside:** User phrased `knwowhtimeanvern`, a playful reference to VERN and the proposed `n0wut1m34n.py` service naming.
+
+**Next proposed change:** Create dedicated `money` PostgreSQL login and database on THOTH, back up `pg_hba.conf`, add narrow INFINITY-source SCRAM rule, reload rather than restart PostgreSQL, and verify connectivity. Do not commit plaintext credentials.
+
+**Status:** Source IP verified; renumbering proposed, no network/database modifications confirmed.
