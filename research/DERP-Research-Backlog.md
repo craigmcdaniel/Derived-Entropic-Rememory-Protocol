@@ -1024,3 +1024,15 @@ COMMIT
 **Important:** The custom Grafana dashboard currently points to Go Money `accounts` and `transactions` tables, not `derpbooks.payroll`; the payroll row does not appear automatically until a payroll Grafana panel is provisioned. Further next steps: build payroll dashboard panel using the reporting role; verify dashboards load/SQL; later link and reconcile paycheck deposit via Go Money API without double-counting. Full deduction breakdown still unavailable due to clipped PDF source.
 
 **Status:** FIRST REAL DERPBOOKS PAYROLL RECORD IMPORTED AND RECONCILED — USER OUTPUT VERIFIED.
+
+## 2026-11-24 — DERPBooks Grafana end-to-end reporting confirmed
+
+**Evidence:** User supplied THOTH PostgreSQL verification plus screenshot of Grafana 13.2.3 dashboard `DERPBooks - Accounting Overview`. Go Money `public.transactions` contains one active November 13 payroll income deposit into a newly created asset account; the dashboard shows 7 accounts, 1 active transaction, transaction activity, and separately queried `derpbooks.payroll` gross, deductions, net, employer contributions, and summary table. The raw payroll record was previously confirmed with zero reconciliation difference. **Both source systems now appear in the same live Grafana dashboard.**
+
+**Root cause of previously blank panels:** The provisioned Grafana PostgreSQL datasource `derpbooks_pg` had `database: money` at the top datasource level. Grafana Query Inspector explicitly reported: "You do not currently have a default database configured for this data source." Corrective change added `database: money` within datasource `jsonData`, followed by Grafana restart; user screenshot confirms data is now rendered correctly. This was **Grafana datasource provisioning**, not a broken Go Money SQL connection.
+
+**Preserve the working state:** THOTH native PostgreSQL `money`, reporting role `money_report`, Grafana datasource UID `derpbooks_pg`, file-provisioned dashboard UID `derpbooks-overview`. Do not overwrite existing dashboards or revert the working datasource configuration.
+
+**Follow-ups:** Grafana stat panel auto-abbreviates gross (e.g., `$1.10K`) and summary table rounds numeric display; adjust field decimal formatting to exactly two digits if desired. Display may show pay date with timezone formatting; original payroll record remains a DATE. The user also created an unintended income-type account initially; accounting account names may be tidied independently. Keep personally identifiable payroll figures out of public Git history.
+
+**Status:** FIRST LIVE DERPBOOKS ACCOUNTING + PAYROLL GRAFANA DASHBOARD VERIFIED BY USER SCREENSHOT.
