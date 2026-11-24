@@ -505,3 +505,28 @@ RemoteAddress RemotePort TcpTestSucceeded
 **Next proposed change:** Create dedicated `money` PostgreSQL login and database on THOTH, back up `pg_hba.conf`, add narrow INFINITY-source SCRAM rule, reload rather than restart PostgreSQL, and verify connectivity. Do not commit plaintext credentials.
 
 **Status:** Source IP verified; renumbering proposed, no network/database modifications confirmed.
+
+## 2026-11-24 approximately 08:32 EST — Go Money PostgreSQL role and database provisioned
+
+**Evidence:** User-pasted THOTH terminal output immediately following the earlier database-provisioning script. The original command generated a random credential into `$HOME/derpbooks/money-db-password` (mode 0600) and attempted `CREATE ROLE money LOGIN`, then created the `money` database with `--owner=money`.
+
+**Verbatim output:**
+```text
+=== DERPBOOKS DATABASE PROVISIONING ===
+
+=== CREATE DATABASE ROLE ===
+CREATE ROLE
+
+=== CREATE DATABASE ===
+
+=== VERIFY ===
+money|money
+
+=== COMPLETE ===
+```
+
+**Confirmed:** The script reports `CREATE ROLE`, and subsequent SQL query reports `money|money`: PostgreSQL role `money` created and database `money` exists owned by `money` on THOTH. The generated private password file is expected at `/home/thoth/derpbooks/money-db-password` per the command but its file ownership, existence and contents have not been independently audited; never commit password material. Authentication and Go Money schema creation are not yet validated.
+
+**Next:** Safely back up `/etc/postgresql/18/main/pg_hba.conf`, add specific `host money money 192.168.4.189/32 scram-sha-256` rule, validate rule parsing, reload PostgreSQL (not restart), then validate connectivity and app configuration. Preserve Metasploit/NetBox services.
+
+**Status:** PostgreSQL provisioning confirmed; remote access and Go Money server still pending.
