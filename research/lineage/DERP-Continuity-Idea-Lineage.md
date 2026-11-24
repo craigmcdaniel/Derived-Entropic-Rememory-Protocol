@@ -140,3 +140,39 @@ The concept paper accumulates polished architecture and assistant-generated expa
 - [Reality-check artifact convention](../DERP-Reality-Check-Artifact-Convention.md)
 
 **Guiding maxim:** *Preserve the idea, its source, its forks, and the evidence that changed it.*
+
+---
+
+## Feedback event — lineage review, 2026-11-24
+
+**Event ID:** DC-018  
+**Origin:** User-supplied external model feedback (model/provider not independently verified).  
+**Classification:** EXTERNAL REVIEW / ASSISTANT-PRESENTED FEEDBACK — neither a USER DECISION nor VERIFIED implementation.  
+**Source:** Feedback text provided in the conversation on 2026-11-24, beginning “Adding an Idea Lineage ledger ... addresses ... attribution drift.”  
+**Target:** This lineage ledger and linked DERP Continuity concept paper.
+
+### Review observations
+
+- The ledger explicitly names **attribution drift**: assistant elaborations can be mistaken for original user intent as an evolving document is polished.
+- Origin/status labels and the rule against upgrading an assistant expansion into a user decision preserve the distinction between proposal and approval.
+- The ZBook endpoint-broker pivot and the battery-for-data correction are valuable examples of why superseded assumptions must remain visible.
+- A short **Current State / Next Falsifiable Test / Open Architectural Choice** section helps new model sessions orient efficiently.
+
+### Recommendations (OPEN, not adopted decisions)
+
+1. **Granularity:** Keep stable idea IDs and day-level dating where precise evidence is unavailable; progressively link exact commit SHAs and document anchors to make changes traceable.
+2. **Document boundaries:** Keep the primary architectural paper lean; place detailed experiments, side branches, and rejected alternatives in linked notes rather than endlessly extending the same document.
+3. **Pilot scoping:** Choose **one** testable first slice—endpoint access continuity, offline replica reconciliation, **or** backup/restore recoverability—to avoid confusing multiple success criteria in a single experiment.
+
+### DERP feedback-loop interpretation
+
+```text
+User idea and correction
+    -> Git-backed concept and lineage
+    -> External-model review
+    -> Review captured as attributed evidence
+    -> Human decision pending
+    -> If adopted: changed spec + traceable test
+```
+
+**Important:** A favorable model critique is *feedback*, not an independent demonstration that the architecture works. The review is recorded to support provenance and future prioritization; no pilot choice has been made by this entry.
