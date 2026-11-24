@@ -744,3 +744,27 @@ package.json        2323
 **Next:** `npm ci` in `H:\DERPBooks\go-money\frontend` only (keep packages and build on H:); inspect Angular client transport host/config mapping and arrange browser frontend connection via correct host/port, likely port 52055. No additional PostgreSQL/schema changes required now.
 
 **Status:** Frontend source and prerequisites confirmed; install/build/serve pending.
+
+## 2026-11-24 — Go Money Angular dependency install verified and same-origin transport identified
+
+**Evidence:** User's INFINITY PowerShell 5.1 output from `npm ci` then `npm exec -- ng version` and `Test-Path .\\node_modules\\@angular\\core` under `H:\DERPBooks\go-money\frontend`.
+
+**Verbatim key details:**
+```text
+Angular CLI       : 21.2.27
+Angular           : 21.2.25
+Node.js           : 24.22.0
+Package Manager   : npm 11.19.1
+Operating System  : win32 x64
+=== VERIFY INSTALL ===
+True
+=== COMPLETE ===
+```
+
+**Interpretation:** Angular frontend dependencies have been installed under the H: source checkout; UI build and browser launch are not yet verified.
+
+**Upstream source v1.8.0:** `frontend/src/app.config.ts` constructs a ConnectRPC transport and checks `CookieInstances.CustomApiHost`; when absent, defaults to relative `baseUrl: '/'`. A local Angular development proxy forwarding application requests to `http://127.0.0.1:52055` should permit same-origin frontend connectivity without editing upstream Angular files, provided the API supports browser transport and proxy path semantics. Although `frontend/src/app/configuration/*.json` contain localhost:8000 sample hosts, actual transport factory uses relative path unless overridden by cookie. Source: https://github.com/ft-t/go-money/blob/v1.8.0/frontend/src/app.config.ts.
+
+**Next:** Add untracked H:-local Angular dev proxy config, run `npm start -- --host 127.0.0.1 --port 4200 --proxy-config <file>`, open `http://localhost:4200/`, validate login/api access against currently running native backend. Persist config deliberately in DERPBooks-owned integration layer, not by editing upstream vendor release. Do not publish credentials or data.
+
+**Status:** Dependencies verified; frontend not yet running.
