@@ -890,3 +890,34 @@ commit   : 90ffed056f0884267356c12a0eeb72a022af53f1
 **Still outstanding:** Grafana financial PostgreSQL datasource, dashboard(s) and transaction ETL. Go Money's link working does not imply Grafana can query the `money` database. We have zero verified imported financial transactions. Next action: create a dedicated least-privilege read-only `money_report` PostgreSQL role on THOTH (SELECT only reporting-safe finance tables/views, not users, JWT/system configuration or tokens), configure PostgreSQL datasource in existing Grafana, use dashboard/API read tests.
 
 **Status:** Navigation verified; finance visualization data connection not yet verified.
+
+## 2026-11-24 — Grafana money_report role privilege audit passes
+
+**User evidence:** THOTH terminal output from SQL privilege audit after the proposed role/password creation and grants.
+
+**Verbatim result:**
+```text
+=== VERIFY PRIVILEGES ===
+      table_name       | can_read
+-----------------------+----------
+ accounts              | t
+ categories            | t
+ daily_stat            | t
+ double_entries        | t
+ service_tokens        | f
+ system_configurations | f
+ tags                  | t
+ transactions          | t
+ users                 | f
+(9 rows)
+
+=== COMPLETE ===
+```
+
+**Confirmed:** PostgreSQL role `money_report` has SELECT privileges on six targeted financial tables and no SELECT privilege on `users`, `service_tokens`, or `system_configurations`. Successful script output supports initial reporting-role creation, but no independent password authentication test or actual Grafana datasource Save & test has yet been shown.
+
+**User reaction (verbatim):** “There was suprinsgly more to this than I expected.”
+
+**Next:** Connect existing THOTH Grafana 13.2.3 at `http://192.168.5.83:3000` to the local THOTH PostgreSQL `money` database using host `127.0.0.1:5432`, role `money_report`, and private credential from `/home/thoth/derpbooks/money-grafana-password`; initial SSL mode can match loopback-only database access. Grafana should not use PostgreSQL owner `money` or PostgreSQL superuser. If datasource Save & test fails, validate `money_report` TCP password login from THOTH first. Initial financial reporting contains no verified actual transactions.
+
+**Status:** Table grants verified; Grafana datasource and dashboards not yet created or tested.
