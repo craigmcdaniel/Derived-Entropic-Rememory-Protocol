@@ -792,3 +792,15 @@ See "C:\Users\mcfuc\AppData\Local\Temp\ng-1wvHxJ\angular-errors.log" for further
 **Remediation proposed:** Rewrite `proxy.conf.json` on H: using `[System.IO.File]::WriteAllText(path, json, (New-Object System.Text.UTF8Encoding($false)))`, then `ConvertFrom-Json` and rerun `npm start`. Test frontend loads and confirm API requests via DevTools. Keep backend and THOTH database unchanged.
 
 **Status:** Angular compilation CONFIRMED; frontend runtime blocked by invalid JSON until successful rerun.
+
+## 2026-11-24 — Go Money Angular frontend reaches login screen on INFINITY
+
+**User observation:** “im at a login screen” after repairing Angular development proxy JSON encoding and launching the frontend at localhost:4200.
+
+**Confirmed:** Angular development server was able to serve/render Go Money v1.8.0 login page on INFINITY. This resolves prior `[1, 1] InvalidSymbol` parse error / connection refused; no browser API authentication has yet been demonstrated. Go Money backend remained healthy at last check, on ports 52055 / 52056 and using THOTH's PostgreSQL `money` database.
+
+**Upstream source verification:** `frontend/src/app/modules/auth/login/login.component.ts` calls `ConfigurationService.getConfiguration({})` on init; `shouldCreateAdmin` toggles register vs sign-in flow. Registration uses `UsersService.create`, then normal sign-in uses `UsersService.login`; thus fresh install is designed to prompt initial administrator registration, no default credentials implied. HTML shows Register only when `isRegisterFlow`, Sign In otherwise. This first user account concerns Go Money's app authentication, separate from PostgreSQL role `money`. Sources: https://github.com/ft-t/go-money/blob/v1.8.0/frontend/src/app/modules/auth/login/login.component.ts and corresponding `login.component.html`.
+
+**Caution:** The current Angular dev proxy matches `/gomoneypb.**`; actual ConnectRPC requests need browser network verification for path and responses. A login page rendering alone does not establish that API calls work. Do not assert successful initial user creation or authenticated access until confirmed.
+
+**Next:** Check whether page says `Register to continue` vs `Sign in to continue`. If register, user creates app administrator credentials in browser; no password supplied in chat/Git. If login API fails, capture status/URL and refine proxy. Later move from dev server to intentional H:-based production/frontend hosting.
