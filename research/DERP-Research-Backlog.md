@@ -376,3 +376,32 @@ A minimal vertical slice would be browser upload → PDF validation → hash and
 **Next read-only evidence collection:** On THOTH, check PostgreSQL service/container identity, listen addresses/port, cluster/database inventory (names only), and network listener. On INFINITY, test `Test-NetConnection 192.168.5.83 -Port 5432`. Then choose an isolated app database and Go Money DB connection configuration; no changes yet.
 
 **Status:** Reuse of THOTH's PostgreSQL proposed; external access not verified.
+
+## 2026-11-24 — THOTH PostgreSQL confirmed live, database reuse checkpoint
+
+**Source:** User-pasted THOTH SSH terminal output, 2026-11-24. Earlier lines of same paste re-show prior Grafana quarantine commands and verification; they are historical context, not newly performed cleanup at this checkpoint.
+
+**Exact relevant commands from pasted output:**
+```bash
+systemctl list-units --all --type=service 'postgresql*' --no-pager
+docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Ports}}' 2>/dev/null | grep -Ei 'NAMES|postgres|pgsql'
+sudo ss -lntp | grep -E '(:5432|:5433|postgres)' || true
+psql --version 2>/dev/null || true
+```
+
+**Verbatim key results:**
+```text
+postgresql.service         loaded active exited  PostgreSQL RDBMS
+postgresql@18-main.service loaded active running PostgreSQL Cluster 18-main
+LISTEN 0      200          0.0.0.0:5432       0.0.0.0:*    users:(("postgres",pid=1257,fd=6))
+LISTEN 0      200             [::]:5432          [::]:*    users:(("postgres",pid=1257,fd=7))
+psql (PostgreSQL) 18.6 (Ubuntu 18.6-0ubuntu0.26.04.1)
+```
+
+**Reconciliation:** PostgreSQL is a *native THOTH service* running cluster `18-main`, not a Docker PostgreSQL container. It listens on all IPv4/IPv6 interfaces at port 5432, so remote connection is potentially possible. Neither `pg_hba.conf` rules nor INFINITY-to-THOTH connectivity has been checked; the `money` database/role do not yet have confirmed existence. No permission or firewall changes have been made.
+
+**Grafana preservation corroboration:** Same paste shows 5 named JSON dashboards quarantined to `/home/thoth/grafana-cleanup-20261124/removed`, 3 explicit keepers retained; provisioning `disableDeletion: false`, `updateIntervalSeconds: 10`; subsequent file list contains 9 remaining dashboard JSON files and `systemctl is-active grafana-server` returned `active`. This is previous cleanup evidence, not a new operation.
+
+**Next:** Run `Test-NetConnection 192.168.5.83 -Port 5432` on INFINITY. Then inspect THOTH's PostgreSQL role/database names and pg_hba access to see what isolated `money` provisioning requires. Keep all financial private data and any passwords outside public Git.
+
+**Status:** Native PostgreSQL running and listening on THOTH; application DB integration not yet configured or proven.
