@@ -1036,3 +1036,13 @@ COMMIT
 **Follow-ups:** Grafana stat panel auto-abbreviates gross (e.g., `$1.10K`) and summary table rounds numeric display; adjust field decimal formatting to exactly two digits if desired. Display may show pay date with timezone formatting; original payroll record remains a DATE. The user also created an unintended income-type account initially; accounting account names may be tidied independently. Keep personally identifiable payroll figures out of public Git history.
 
 **Status:** FIRST LIVE DERPBOOKS ACCOUNTING + PAYROLL GRAFANA DASHBOARD VERIFIED BY USER SCREENSHOT.
+
+## 2026-11-24 — DERPBooks 2026 bulk payroll import visibly populated Grafana
+
+The user reported that the 2026 bulk payroll import **worked** and that historical payroll records populated the existing Grafana DERPBooks dashboard. The prepared bundle was transferred from INFINITY to THOTH, and an attempted direct `psql -f` execution as `postgres` initially failed due to file permissions on `/home/thoth/derpbooks`. The subsequent workaround streams the file from a privileged shell to `psql` running under the postgres account. A PowerShell display of "IMPORT SUCCEEDED" and a separate SSH verification failed to conclusively confirm SQL execution owing to remote sudo TTY and nested quoting errors; however, user subsequently verified **the imported payroll dataset is visible in Grafana**.
+
+**Observed/confirmed:** Historical payroll information imported into PostgreSQL and displayed by Grafana, validating PDF → normalization/deduplication → SQL import → PostgreSQL → Grafana workflow.
+
+**Not yet independently audited:** exact total/unique payroll rows, detail table count, all reconciliation totals, and idempotence after import. Do not claim those verified solely from the dashboard view. Do not rerun bulk import without need; avoid unnecessary shell friction.
+
+**Privacy:** No individual payroll financial figures or personal data in this public research log.
