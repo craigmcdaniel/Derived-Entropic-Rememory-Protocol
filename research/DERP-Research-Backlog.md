@@ -330,3 +330,15 @@ A minimal vertical slice would be browser upload → PDF validation → hash and
 **Next evidence required:** User output from Git clone, upstream commit, Compose files and local Docker availability. Only after these checks mark it deployed or integrated. Review AGPL-3.0 obligations before distributing a modified network service.
 
 **Status:** Upstream selected for evaluation. Local cloning/deployment not verified.
+
+## 2026-11-24 — Go Money v1.8.0 Windows extraction and startup diagnostic
+
+**Source of evidence:** User-pasted Windows PowerShell 5.1 transcript from INFINITY, working as `C:\Users\mcfuc`; Windows Explorer screenshot of `E:\dls`.
+
+**Confirmed:** User downloaded and extracted both `go-money-server_1.8.0_windows_amd64.zip` and `go-money-mcp-client_1.8.0_windows_amd64.zip` in `E:\dls`. The extracted server folder `E:\dls\go-money-server_1.8.0_windows_amd64` contains `go-money-server.exe` (39,130,624 bytes), `LICENSE` (33,893 bytes), and `README.md` (7,516 bytes). Windows Firewall prompted when the user previously launched the server, but there was no visible application window. A process query searching names matching `go-money` returned no processes at the time of the user's test; TCP listener query for those processes likewise returned nothing.
+
+**Script diagnostic correction:** Earlier general recursive search over `E:\DLS` was manually interrupted using Ctrl+C; do **not** interpret its empty output as evidence that the download was absent. Later direct folder enumeration succeeded and located the executable. The lack of process/listener confirms only that the server was not running when checked; reason for exit remains **unknown**. Native binary is not an Obsidian-style GUI; browser interface requires running server and its dependencies.
+
+**Next step:** Start `E:\dls\go-money-server_1.8.0_windows_amd64\go-money-server.exe` inside PowerShell from its extracted directory and capture stdout/stderr plus exit code. Read the accompanying `README.md` for runtime options; do not assume DB or firewall error until actual output is collected. Do not claim installation at `H:` yet. User intends eventual installation/data on `H:`.
+
+**Status:** Extraction verified; startup not yet diagnosed; no installation, database provisioning, or service deployment verified. Preserve future command/output checkpoints and append to Git regularly.
