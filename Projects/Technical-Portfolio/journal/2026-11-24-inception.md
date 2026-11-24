@@ -68,3 +68,12 @@
 - **Status:** Historical first-person recollection. Exact scan dates, commands, discovered hosts and relationship to CHARON's server migration remain to be reconciled against original records.
 - **Portfolio significance:** Transition from a guided exercise to self-directed network discovery, later informing infrastructure mapping and lab expansion.
 - **Next:** Find archived scan results or conversation records to reconstruct what the initial LAN scans actually revealed.
+
+### 2026-11-24 — Hypothesis: LAN discovery led to the domain
+
+- **User's wording:** “I think that is why we built a domain”
+- **Context:** This follows the recollection that, after TryHackMe Nmap material, the user began conducting Nmap scans on their own LAN.
+- **Proposed chronology:** Guided Nmap learning → hands-on LAN discovery → a decision to build an Active Directory domain. This is **the user's tentative explanation**, not an independently established causal chain.
+- **Status:** **Hypothesis / historical recollection**, pending original conversation dates and records of domain deployment.
+- **Interpretive possibility (not a recorded motive):** Centralized identity, naming, management and a more structured lab could have been benefits of a domain; do not assert these were the original reasons without evidence.
+- **Next:** Locate initial LAN-scan discussions and first domain-controller setup records; use dated evidence to test the order and motives.
