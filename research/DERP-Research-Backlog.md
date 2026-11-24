@@ -816,3 +816,26 @@ See "C:\Users\mcfuc\AppData\Local\Temp\ng-1wvHxJ\angular-errors.log" for further
 **Next diagnostic on INFINITY:** POST JSON `{}` to `http://127.0.0.1:52055/gomoneypb.configuration.v1.ConfigurationService/GetConfiguration` and the corresponding `http://127.0.0.1:4200/...` proxy route. Compare HTTP code and response body (especially `shouldCreateAdmin`), then check local browser demo flag if backend/proxy agree. Do not disclose JWTs/passwords. Preserve actual results.
 
 **Status:** Frontend rendering confirmed; registration/authentication blocked; diagnostic pending.
+
+## 2026-11-24 — Go Money registration failure isolated to Angular proxy 404
+
+**Source:** User-pasted INFINITY Windows PowerShell 5.1 POST test with JSON body `{}`, using configuration RPC `/gomoneypb.configuration.v1.ConfigurationService/GetConfiguration`.
+
+**Verbatim evidence:**
+```text
+=== TEST: http://127.0.0.1:52055/gomoneypb.configuration.v1.ConfigurationService/GetConfiguration ===
+HTTP: 200
+Response: {"shouldCreateAdmin":true,"baseCurrency":"USD","backendVersion":"1.8.0","commitSha":"e423145"}
+
+=== TEST: http://127.0.0.1:4200/gomoneypb.configuration.v1.ConfigurationService/GetConfiguration ===
+ERROR: The remote server returned an error: (404) Not Found.
+HTTP: 404
+```
+
+**Confirmed:** Native Go Money v1.8.0 backend on localhost:52055 correctly reports that no initial administrator exists (`shouldCreateAdmin=true`). Angular's port-4200 proxy is not forwarding the request (HTTP 404). Therefore the UI remained on sign-in because the initial `getConfiguration` call could not return the registration flag, not because a registration route is missing or the user is already registered. No database or backend change required.
+
+**Probable cause:** Earlier Angular dev proxy key `^/gomoneypb\\.` was regex-like but unsupported as a match expression in this Vite Angular proxy context; the replacement key should match the ConnectRPC service/method path via glob `/gomoneypb.*/**`. Need validate by restarting Angular dev server then comparing identical POST request to 4200 and 52055. Ensure UTF-8 no BOM on PowerShell 5.1.
+
+**Remediation (proposed, not yet confirmed):** Replace `H:\DERPBooks\go-money\frontend\proxy.conf.json` with JSON mapping `"/gomoneypb.*/**"` to `http://127.0.0.1:52055`; use UTF8Encoding(false), restart Angular, repeat API POST. Once HTTP 200 `shouldCreateAdmin=true` appears through port 4200, reload login and use native Register flow on same page. No need to invent /register.
+
+**Status:** Root fault narrowed to Angular proxy; fix pending.
