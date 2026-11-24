@@ -636,3 +636,29 @@ Exit code: 1
 **Next:** From second INFINITY PowerShell session, verify process and TCP listeners; read `README.md` / upstream source for frontend build/deployment, then relocate to H: and plan service persistence. Preserve secrets outside Git.
 
 **Status:** Application backend started successfully (log-confirmed), operational probe pending.
+
+## 2026-11-24 — Go Money process/listeners independently verified and HTTP health routes identified
+
+**Evidence source:** User-pasted second INFINITY Windows PowerShell 5.1 terminal query plus v1.8.0 upstream source review.
+
+**Verbatim decisive output:**
+```text
+ProcessId      : 26104
+Name           : go-money-server.exe
+ExecutablePath : E:\dls\go-money-server_1.8.0_windows_amd64\go-money-server.exe
+
+LocalAddress LocalPort  State
+------------ ---------  -----
+::               52056 Listen
+::               52055 Listen
+```
+
+**Confirmed:** Go Money native backend was alive on INFINITY at test time and owns listening TCP ports 52055 and 52056. No persistent Windows service established. User asked whether there is an HTTP endpoint.
+
+**Exact v1.8.0 upstream source verification:** `pkg/boilerplate/ops.go` registers `GET /health`, `GET /ready`, and `/metrics` through Prometheus HTTP handler on the ops HTTP server (`OPS_HTTP_PORT`, default 52056); `cmd/server/main.go` starts gRPC/application gateway service on `GRPC_PORT`, default 52055, and may register `/mcp` only when MCP is enabled. In current session MCP is disabled due to absent docs. Source paths: https://github.com/ft-t/go-money/blob/v1.8.0/pkg/boilerplate/ops.go and https://github.com/ft-t/go-money/blob/v1.8.0/cmd/server/main.go.
+
+**Correct distinction:** HTTP operational endpoints do exist on 52056, but they are not the financial user-facing dashboard; 52055 is the application gRPC/HTTP gateway and is not itself a bundled native Windows GUI. Still need to test GET /health and GET /ready and provision/host the frontend separately.
+
+**Next:** From INFINITY check `http://localhost:52056/health` and `/ready` (should return HTTP 200), then assess frontend delivery before deciding native Windows vs Docker for full UI.
+
+**Status:** Process and port listeners confirmed; URL-level HTTP probe pending.
