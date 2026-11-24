@@ -562,3 +562,33 @@ t
 **Upstream finding from project architecture docs:** `go-money-server` is backend-only; `go-money-full` Docker image includes web frontend. Earlier suggestion that native server binary alone would provide a browser financial UI needs correction. Go Money `DB_HOST`, `DB_PORT`, `DB_DB`, `DB_USER`, `DB_PASSWORD`, and `DB_SSL_MODE` are environment settings; verify against v1.8.0 release configuration before final setup. Frontend delivery may require separate build or `go-money-full` container, so don't promise native Windows GUI from server exe.
 
 **Next:** Verify `money` credential by authenticating locally on THOTH via TCP loopback, then from INFINITY with env settings, ensuring secrets not printed or committed. No passwords in Git.
+
+## 2026-11-24 — Go Money PostgreSQL local SCRAM authentication succeeded
+
+**Source:** User-pasted THOTH interactive terminal output following the private credential file and loopback TCP login test.
+
+**Command:**
+```bash
+PASSWORD_FILE="$HOME/derpbooks/money-db-password"
+if [ ! -s "$PASSWORD_FILE" ]; then
+    echo "PASSWORD FILE MISSING"
+else
+    PGPASSWORD="$(cat "$PASSWORD_FILE")" \
+        psql -h 127.0.0.1 -p 5432 \
+        -U money -d money \
+        -Atc "SELECT current_user, current_database();"
+fi
+```
+
+**Verbatim result:**
+```text
+=== GO MONEY DATABASE LOGIN TEST ===
+money|money
+=== TEST COMPLETE ===
+```
+
+**Confirmed:** PostgreSQL on THOTH accepted the dedicated `money` user's generated credential via local TCP SCRAM authentication, and the session connected to database `money`. No password value was exposed in console output or committed. The result does **not** yet confirm remote authentication from INFINITY, successful Go Money database migrations, or successful application/GUI startup.
+
+**Next:** Confirm Go Money v1.8.0 configuration environment keys in upstream source/release documentation; configure INFINITY's backend to target `192.168.5.83:5432`, with password delivered privately and not logged, and capture startup output. Distinguish backend server from web frontend.
+
+**Status:** Database-side local login CONFIRMED; application remote login unverified.
