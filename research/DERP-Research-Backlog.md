@@ -166,3 +166,25 @@ The user clarified that Copilot should access the **same semantic memory over th
 ### Editorial boundary
 
 No assumption that the first FREYR experiment must deploy PostgreSQL, Grafana, or a Python service. Extract and reconcile a sample first, then decide what code or storage is justified by the evidence.
+
+## 2026-11-24 — DERPBooks architecture correction: Git-centric application from inception
+
+**User correction (verbatim):** “the derpbooks was going to be the first project we made git centric from the get go with a dedicated data layer with sql ops”
+
+**Status:** Architectural intent explicitly clarified; implementation unverified.
+
+### Corrected scope
+
+**DERPBooks** (earlier working names FREYR / CraigBooks in this backlog) is intended to be the **first application designed Git-centrically from the beginning**, with a **dedicated, queryable data layer exposing SQL operations**. It is **not merely a paycheck-stub extraction script** or a one-off dashboard experiment.
+
+- **Git-centric lifecycle:** Project structure, code, schemas/migrations, query definitions, documentation, and approved configuration changes are versioned together, with source history and provenance integral to the application's workflow. “Embed Git in projects” is a design requirement for this pilot, not a speculative future add-on.
+- **Dedicated data layer and SQL operations:** A persistent structured store and intentionally defined SQL query/write operations are part of the application's initial architecture. The exact DB engine and approved operation surface have not been decided here; earlier research mentions PostgreSQL for financial records and SQLite for document indexing, which serve distinct possible roles and should not be silently conflated.
+- **Evidence model:** Preserve original financial documents privately, associate them with hashes, timestamps, extracted fields, revisions, reconciliation outcomes and Git-linked development provenance. Keep personal records and secret material out of the public DERP repository.
+- **First use case:** Explore paycheck stubs to exercise ingestion, structured records, queries and reconciliation, not to define or limit the application's architecture.
+- **AI interoperability:** The previously proposed portable Python SQL/query environment and optional view-only API are possible interfaces to the dedicated data layer; neither is confirmed built.
+
+### Correction to earlier inventory wording
+
+The preceding inventory entry over-simplified DERPBooks as “extract a check stub before deciding whether to build a database.” **Superseded:** A dedicated SQL-capable data layer and Git-centric design are foundational requirements. We can still choose a minimal first vertical slice without pre-building the entire financial application.
+
+**Next inventory question:** Clarify the relationship between the financial records store (possibly PostgreSQL) and the repository-local index (possibly SQLite): one database or two distinct purposes? Preserve the decision before defining a schema or repository scaffold.
