@@ -247,3 +247,22 @@ A minimal vertical slice would be browser upload → PDF validation → hash and
 **Status:** Design requirement, not implemented. Parser support, schema, review workflow and API contract remain unselected. The HTML upload vs watched-folder question is secondary to this shared ingestion pipeline.
 
 **Next inventory interview topic:** What should count as an accepted transformation—automatic mapping only when reconciled, or a human review gate for the first paycheck documents?
+
+## 2026-11-24 — DERPBooks: first real PDF specimen (private payroll document)
+
+**Source:** User-supplied one-page paycheck PDF dated 2025-12-26; this public research log intentionally excludes all identifying fields, account details, pay amounts and the raw document.
+
+**Inspection (2026-11-24):** PDF opened with PyMuPDF; one page, 2,061 selectable text characters, 52 text blocks and four detected tables. Native extraction is feasible; OCR is not needed for this sample. Visual inspection agrees that the page uses separate summary, earnings, deductions/taxes and deposit areas.
+
+**Extraction and normalization challenges observed:**
+- Columns distinguish current-period amounts from YTD amounts. Many rows contain only YTD values; blank current values must remain NULL, not be misinterpreted as current earnings.
+- Some benefit/deduction rows carry separate employee and employer current/YTD columns; preserve all four dimensions, not just a single amount.
+- Labels can wrap across lines, and certain glyphs use ligatures; extraction needs normalized labels plus preserved source text.
+- Summary fields, detailed lines and deposit amounts need typed, independently validated relationships; totals alone do not establish full breakdown consistency.
+- Source pointers should refer to document hash, page, row/section and extraction version, and any uncertain mapping needs review.
+
+**Architectural implication:** The minimum first vertical slice is native PDF parse → document-type-aware transform → schema validation → staged SQL records → review/reconciliation, preserving the original privately. An HTML API upload or watched folder may both call the same ingestion worker.
+
+**Status:** File inspection confirmed in current ChatGPT analysis environment; no DERPBooks service, SQL schema, worker, upload endpoint or database ingestion is deployed by this inspection. No private financial content was committed.
+
+**Next decision:** Introduce a staging/review state for extracted pay records, then promote approved or rules-validated records into the financial ledger. Determine precise approval policy after testing a representative set of differing paycheck layouts.
