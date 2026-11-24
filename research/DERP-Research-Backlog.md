@@ -839,3 +839,15 @@ HTTP: 404
 **Remediation (proposed, not yet confirmed):** Replace `H:\DERPBooks\go-money\frontend\proxy.conf.json` with JSON mapping `"/gomoneypb.*/**"` to `http://127.0.0.1:52055`; use UTF8Encoding(false), restart Angular, repeat API POST. Once HTTP 200 `shouldCreateAdmin=true` appears through port 4200, reload login and use native Register flow on same page. No need to invent /register.
 
 **Status:** Root fault narrowed to Angular proxy; fix pending.
+
+## 2026-11-24 — Go Money frontend access confirmed by operator
+
+**Operator statement (verbatim):** “we in”
+
+**Context:** Earlier Angular frontend on INFINITY showed sign-in only because `POST /gomoneypb.configuration.v1.ConfigurationService/GetConfiguration` returned 404 through port 4200 while backend on 52055 returned HTTP 200 `{"shouldCreateAdmin":true,"baseCurrency":"USD","backendVersion":"1.8.0","commitSha":"e423145"}`. A corrected Angular dev proxy pattern `/gomoneypb.*/**` was supplied, followed by operator's successful-access report.
+
+**Reconciled state:** Operator reports that the Go Money v1.8.0 native UI is now accessible and they are **in**. Treat as user-confirmed successful entry rather than independent account/API audit; credentials and screenshots were not supplied. App stack: INFINITY Windows backend (previously observed `go-money-server.exe` PID 26104, listeners 52055/52056, HTTP /health and /ready 200) using THOTH PostgreSQL `money`; Angular source and dependencies at `H:\DERPBooks\go-money\frontend` served on localhost:4200. Backend binary still at `E:\dls` as last observed. MCP disabled for missing docs. Git checkout pinned tag v1.8.0 commit `e423145`.
+
+**Next priorities:** Establish stable H:-based deployment/launcher and frontend/API proxy beyond development shell; then configure existing THOTH Grafana with restricted read-only finance datasource and dashboards; add automated PDF ingestion for LCC payroll and Huntington statements. Do not require manual transaction transcription. No financial transaction imports yet verified; protect source PDFs and credentials outside public repository.
+
+**Status:** UI access OPERATOR-CONFIRMED. Persistence, financial dashboards and ETL pending.
