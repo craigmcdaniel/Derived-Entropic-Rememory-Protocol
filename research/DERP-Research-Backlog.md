@@ -863,3 +863,20 @@ HTTP: 404
 **Next:** Determine working THOTH Grafana URL on LAN, then supply `GRAFANA_CONFIG_URL` when launching Go Money backend on INFINITY. Restarting backend will interrupt the current foreground session and require existing DB/MCP variables; avoid changing until launch environment is preserved. Independently provision a read-only PostgreSQL reporting role/datasource and deploy initial Grafana finance dashboards; URL configuration alone doesn't produce reports.
 
 **State:** Frontend authenticated and functioning; Grafana integration banner visible; reporting not configured.
+
+## 2026-11-24 — THOTH Grafana 13.2.3 health verified from INFINITY
+
+**Source:** User-pasted INFINITY PowerShell 5.1 `Invoke-RestMethod -Uri http://192.168.5.83:3000/api/health` result.
+
+**Verbatim output:**
+```text
+database : ok
+version  : 13.2.3
+commit   : 90ffed056f0884267356c12a0eeb72a022af53f1
+```
+
+**Confirmed:** THOTH's existing Grafana HTTP API is reachable from INFINITY at `http://192.168.5.83:3000`, with Grafana v13.2.3 reporting its own database status `ok`. This is Grafana's *internal health database status*, **not** evidence of a configured `money` PostgreSQL datasource or finance dashboard. Earlier pasted failed registration API proxy test (52055 HTTP 200 / 4200 HTTP 404) is historical; the user previously confirmed UI access after proxy repair.
+
+**Next:** When Go Money backend is deliberately restarted, add `GRAFANA_CONFIG_URL=http://192.168.5.83:3000` alongside already working DB settings and `MCP_DISABLE=true` to remove warning from native frontend. Separately configure a least-privilege read-only Grafana PostgreSQL role and datasource to `money` on THOTH. Preserve finances and credentials outside public repo. Current Go Money backend is a foreground process; changing environment in a different PowerShell session will not affect it until restart.
+
+**Status:** Grafana reachability VERIFIED; Go Money UI URL integration and financial datasource NOT YET CONFIGURED.
