@@ -1127,3 +1127,21 @@ User supplied replacement private archive `bank(1).zip`. Compared against origin
 **Noise engine:** CAPTURED, NOT EXECUTED. These are hypothesis/backlog items for bank statement ingestion design, not evidence of completed parsing or ledger import. Next operational milestone remains a transaction-by-transaction extraction and seven-statement reconciliation before any Go Money writes.
 
 **Privacy rule:** Never commit individual transactions, account numbers, source bank PDFs, payroll figures, or credentials to this public research repo.
+
+## 2026-11-24 — DERPBooks seven-statement transaction extraction reconciled
+
+### Verified results
+- Parsed the user's replacement private Huntington statement archive (seven text-extractable PDFs covering 2026-04-21 through 2026-11-12).
+- Extracted **233 transaction rows**, classified by bank statement sections (credits, ATM withdrawals, POS purchases, other debits). **233 distinct within-batch staging fingerprints**; no PDF text parser exceptions.
+- Each of the **seven statement periods reconciled** the sum of extracted credit transactions, non-fee debit transactions, and fee transactions to the respective bank-printed summary totals, with **zero arithmetic differences**. Separate statement beginning/ending balance arithmetic also reconciles.
+- Private deliverable `DERPBooks-bank-staging-2026.zip` contains `transactions-staging.csv`, `reconciliation.csv`, `manifest.json`, a reproducible Python extraction script, readme, and `DERPBooks-bank-staging-2026.sql`.
+- Proposed SQL loads `derpbooks.bank_transaction_staging` into THOTH's `money` PostgreSQL database using idempotent `ON CONFLICT (transaction_key) DO NOTHING`, preserving source document SHA-256, page, statement period, posting date, original description, signed amount, section and occurrence ordinal. Grants reporting access to `money_report`. **The SQL has been generated and statically inspected, but has not been executed against THOTH.**
+- **No Go Money transaction or account changes were made.** User bank data remains outside the public research repository.
+
+### Interpretation and limitations
+- Reconciliation at the bank-statement section level is confirmed; matching payroll deposits to paystubs is still pending, and the Go Money ledger has not been populated from bank statements.
+- Batch fingerprints are suitable for repeated imports of the same batch, not guaranteed globally unique across future corrected/overlapping statements. Build stronger revision handling and cross-statement identity checks.
+- Preserve distinctions between bank posting date and payroll pay date, between bank fees and other debits, and between source PDF validation and ledger import.
+- Prior user's request to avoid repeated copy/paste and host switching remains the operating principle; eventual ingestion should become single-step and verify the database count before declaring success.
+
+**Status:** PRIVATE TRANSACTION STAGING PACKAGE RECONCILED AND READY FOR CONTROLLED IMPORT; NOT DEPLOYED.
