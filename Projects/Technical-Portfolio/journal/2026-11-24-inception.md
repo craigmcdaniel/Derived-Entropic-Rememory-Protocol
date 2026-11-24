@@ -121,3 +121,14 @@
 - **Reconciliation:** Earlier user report states power telemetry reaches back to **October 10**. Thus the reported power-data date predates the reported Nest start by five days, if both are from 2026. The working account “Nest → smart plugs” cannot be assumed to describe the initial start of power-data collection.
 - **Status:** User-reported historical date anchors; original configuration dates, earliest telemetry timestamps and the creation date of the first Grafana dashboard remain unverified.
 - **Next:** Retrieve dated Nest setup messages and earliest smart-plug/power ingestion records; distinguish data collection, dashboard creation and Google-fee discovery.
+
+### 2026-11-24 — Weather app to concentrated Grafana work; maintenance digression
+
+- **User's wording:** “so for that week after we did the weather app, we just hit fucking grafana hard dude.”
+- **Historical recollection:** The weather app preceded a roughly week-long intensive period of Grafana development. Exact dates, dashboard creation order and overlap with the October 10 power-data and October 15 Nest anchors still need source reconciliation.
+- **Digression:** User reported obsolete provisioned Grafana dashboards they could not remove in the UI, selected five for removal and three to preserve, and executed an inventory, quarantine and verification on THOTH.
+- **Confirmed output:** Five dashboard JSON definitions quarantined; three keepers preserved; Grafana service active. User: “we are good to go” and subsequently “this freed up a little bit of ram in the container lol”. No quantified RAM delta.
+- **Full scripts and copied terminal output:** [THOTH Grafana dashboard cleanup — 2026-11-24](../case-studies/2026-11-24-thoth-grafana-dashboard-cleanup.md).
+- **User's subsequent note:** “our dashboard dashboard is getting busy” — observation about increasing dashboard index complexity, **not** a request to change the architecture during this digression.
+- **Status:** Maintenance completed per user's confirmation; early Grafana chronology remains historical recollection pending archive records.
+- **Next:** Return to the weather-app-to-Grafana period and identify the earliest creation timestamps/evidence.
