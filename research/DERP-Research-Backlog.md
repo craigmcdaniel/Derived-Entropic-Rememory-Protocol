@@ -1100,3 +1100,30 @@ User supplied replacement private archive `bank(1).zip`. Compared against origin
 **Verified document coverage:** Seven consecutive Huntington statement periods spanning 2026-04-21 through 2026-11-12, with no missing statement periods and no duplicate source-file hashes. This is an archive inventory result, **not** transaction-level extraction or reconciliation. Do not claim ledger completeness until all pages and statement sections have been parsed and their totals independently reconciled.
 
 **Next:** transaction-row parser, per-statement debit/credit/fees reconciliation, source provenance and idempotent transaction staging, payroll matching, and controlled Go Money API import. No private statement data included in this public repository.
+
+## 2026-11-24 — DERP noise-engine intake — bank ingestion superfluous observations
+
+*Append-only brainstorm / low-priority working hypotheses. This section intentionally captures useful extra observations without promoting them to confirmed architecture or cluttering the immediate task queue.*
+
+### Confirmed observations to preserve
+- The replacement bank-statement archive has seven unique source PDFs covering continuous statement periods from 2026-04-21 through 2026-11-12; the May 13–June 10 gap found in the initial six-statement archive was resolved. The six original files have unchanged content hashes.
+- These are text-extractable Huntington statement PDFs, not a structured transaction export. Per-statement **summary** reconciliation succeeded on the initial six PDFs; full transaction-row reconciliation has not yet been performed for the seven-PDF archive.
+- The payroll and banking evidence have different clocks: official pay date, bank posting date, period covered, statement issue date, extraction date, import time, and correction time. Preserve independently.
+- The working financial architecture has distinct layers: original private documents; normalized payroll and bank evidence in THOTH PostgreSQL; Go Money accounting ledger; read-only Grafana reporting. The research repo is not a repository of personal financial records.
+
+### Useful noise / speculative ideas
+- One statement may contain multiple transaction classes with different sign semantics (deposits, transfers, withdrawals, service fees), plus reversals, corrections, or repeated merchant descriptions. Treat statement section and balance direction as source evidence rather than converting everything to expenses.
+- Bank transaction identity should use native IDs when available; otherwise a composite fingerprint (account identity, date, signed amount, normalized description, statement provenance), with a mechanism for collisions and corrections. File hash identifies a document, **not** a unique financial transaction.
+- Paycheck-to-bank matching is a *candidate relationship*, not proof: net amount + plausible posting-date window + employer description + account identity + uniqueness, accounting for early deposits and holiday/weekend posting.
+- A missing source document is different from no activity. Mark archive-coverage gaps distinctly from a verified zero-transaction period.
+- Separate **source coverage**, **statement-level arithmetic**, **transaction extraction completeness**, **deduplication**, **ledger reconciliation**, and **dashboard rendering** into distinct status checks. Success in one stage never establishes all later stages.
+- Source-preserving parser: store original line text, normalized fields, per-row document/page/section reference, extraction version, certainty flags, and reversible transformations.
+- Import dry-run should surface counts of candidate new transactions, exact repeats, ambiguous duplicates, unmatched payroll deposits, potentially incorrect signs, and balance mismatches before any Go Money API writes.
+- One-command execution should produce a compact manifest and a clear success/failure result without complex nested PowerShell/SSH quoting; keep private artifacts on H: (INFINITY) or THOTH private storage.
+- Preserve the possibility of future OFX/QFX/CSV inputs even if the current batch is PDF. The *canonical transaction model* should be format-independent.
+- Eventually compare bank-side cash flow against payroll-side earned/withheld amounts without double-counting income, and report unmatched deposits or absent payroll periods separately.
+
+### Status and priority
+**Noise engine:** CAPTURED, NOT EXECUTED. These are hypothesis/backlog items for bank statement ingestion design, not evidence of completed parsing or ledger import. Next operational milestone remains a transaction-by-transaction extraction and seven-statement reconciliation before any Go Money writes.
+
+**Privacy rule:** Never commit individual transactions, account numbers, source bank PDFs, payroll figures, or credentials to this public research repo.
