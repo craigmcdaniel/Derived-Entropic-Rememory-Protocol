@@ -405,3 +405,26 @@ psql (PostgreSQL) 18.6 (Ubuntu 18.6-0ubuntu0.26.04.1)
 **Next:** Run `Test-NetConnection 192.168.5.83 -Port 5432` on INFINITY. Then inspect THOTH's PostgreSQL role/database names and pg_hba access to see what isolated `money` provisioning requires. Keep all financial private data and any passwords outside public Git.
 
 **Status:** Native PostgreSQL running and listening on THOTH; application DB integration not yet configured or proven.
+
+## 2026-11-24 — INFINITY to THOTH PostgreSQL TCP connectivity verified
+
+**Source:** User-pasted Windows PowerShell 5.1 output from INFINITY (`C:\Users\mcfuc`).
+
+**Command and verbatim outcome:**
+```powershell
+Write-Host "=== INFINITY TO THOTH POSTGRESQL ==="
+Test-NetConnection 192.168.5.83 -Port 5432 |
+    Select-Object ComputerName, RemoteAddress,
+        RemotePort, TcpTestSucceeded
+```
+```text
+ComputerName RemoteAddress RemotePort TcpTestSucceeded
+------------ ------------- ---------- ----------------
+192.168.5.83 192.168.5.83        5432             True
+```
+
+**Confirmed:** INFINITY reaches TCP port 5432 at THOTH `192.168.5.83`; earlier THOTH output independently confirmed a running PostgreSQL 18.6 cluster listening there. This does **not** establish valid PostgreSQL credentials, `pg_hba.conf` acceptance, or existence of Go Money's `money` role/database.
+
+**Next read-only audit:** `sudo -u postgres psql` database/role inventory and `pg_hba_file_rules` (don't disclose passwords or private financial data). Choose specific `money` role and DB without disturbing existing applications; validate application connection settings before writing changes.
+
+**Status:** Network path CONFIRMED, database authentication/provisioning NOT YET VERIFIED.
