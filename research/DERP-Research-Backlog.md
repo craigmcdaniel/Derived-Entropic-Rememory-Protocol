@@ -1001,3 +1001,26 @@ HTTP 200
 **Modeling decision:** Separate `payroll_events` with gross, net, deductions, employer contributions and date provenance, and `payroll_components` for detailed earning, benefit and withholding line items where source permits. Keep reported YTD amounts distinct from current-period ledger movements. Only create the actual net paycheck deposit in Go Money's bank account when correlated to bank evidence; gross pay, deductions and employer contributions are payroll analytics, **not additional cash deposits**. Store detailed personal payroll records privately in THOTH PostgreSQL or encrypted local source files, never public GitHub. Generate stable idempotency keys from pay date, employer and source hash; flag discrepancies rather than silently override values.
 
 **Stage:** Current stub parsed/reconciled in private conversation staging files. No database insert or Go Money API import has yet been confirmed. Next stage build private payroll fact tables/reporting views and automate extraction and reconciliation, then link Go Money bank deposit to payroll event.
+
+## 2026-11-24 — DERPBooks first payroll database import verified on THOTH
+
+**User terminal evidence:** After running private payroll import SQL on THOTH `money` PostgreSQL database, console displayed:
+```text
+BEGIN
+CREATE SCHEMA
+CREATE TABLE
+INSERT 0 1
+GRANT
+GRANT
+COMMIT
+  pay_date  |         employer          |  gross  | deductions |  net   | employer_contributions | reconciliation_difference
+------------+---------------------------+---------+------------+--------+------------------------+---------------------------
+ 2026-11-13 | Lansing Community College | 1098.44 |     254.45 | 843.99 |                 349.96 |                      0.00
+(1 row)
+```
+
+**Confirmed:** New `derpbooks` schema created within THOTH PostgreSQL `money`; first `derpbooks.payroll` row for LCC pay date 2026-11-13 persisted after COMMIT. Source was user-provided PDF generated from payroll web app showing aggregated gross, deductions, net and employer contributions. Reporting role `money_report` granted schema usage and SELECT on payroll table. Paycheck reconciles with zero difference. SQL uses stable `source_key='LCC-2026-11-13'` primary key and `ON CONFLICT DO NOTHING` for idempotency. Employer and gross supporting data **not** represented as separate deposits; actual net cash deposit not yet imported into Go Money transaction ledger. Sensitive payroll data remains in user's private THOTH database, *not* in public repo.
+
+**Important:** The custom Grafana dashboard currently points to Go Money `accounts` and `transactions` tables, not `derpbooks.payroll`; the payroll row does not appear automatically until a payroll Grafana panel is provisioned. Further next steps: build payroll dashboard panel using the reporting role; verify dashboards load/SQL; later link and reconcile paycheck deposit via Go Money API without double-counting. Full deduction breakdown still unavailable due to clipped PDF source.
+
+**Status:** FIRST REAL DERPBOOKS PAYROLL RECORD IMPORTED AND RECONCILED — USER OUTPUT VERIFIED.
