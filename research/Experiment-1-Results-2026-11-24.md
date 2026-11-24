@@ -24,6 +24,11 @@ The repository is both the method and the data: a Git-backed Obsidian vault that
 
 About 40 Markdown files (about 418 KB) covering handoff architecture, provenance conventions, a cross-model review, and several side projects. The research backlog alone is about 111 KB, roughly 27% of the total. By title and size, an estimated 235 KB belongs to projects outside the Obsidian stack.
 
+## Reviewer retrieval test — observed outcome
+
+- **PASS (reported result):** ChatGPT retrieved the exact Experiment 1 flag, correctly identified fictional statement B, and supported A and C; the review was scored as a pass for discovery, attribution, and avoiding hallucination, based on the assistant's disclosed response rather than an independently verified tool trace.
+- **LIMITATION (test design):** ChatGPT reported starting at `README.md` but locating the results and evidence through commit history and patches, not a README-to-results link chain (no such README link existed); the descriptive commit message and public patch exposed the target, so this demonstrated commit discovery rather than the intended link traversal. A neutral-message, linked, history-controlled retest remains proposed, not completed.
+
 ## Findings
 
 **Worked**
