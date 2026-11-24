@@ -419,3 +419,88 @@ Broken incremental chains; missing WAL segments; corrupt archives; absent encryp
 - The service should sell **measured, repeatable recoverability**, not an unqualified promise of zero downtime.
 
 **Working name:** DERP Continuity — *Weekly OH SHIT Recovery Assurance.*
+
+---
+
+## Addendum D — Municipal critical-data preservation and recovery assurance
+
+**Captured:** 2026-11-24  
+**Status:** Proposed service extension; no municipal customer, access agreement, traffic-controller integration, safety certification, recovery SLA, or completed field test.
+
+### Strategic premise
+
+Small municipalities may depend on low-visibility but operationally important configuration records, software environments and historical datasets. DERP Continuity could specialize in **preserving the ability to recover and interpret these artifacts**, not just preserving bytes.
+
+The first product would be **off-system archival, provenance and isolated restore verification**, not remote command/control or autonomous failover of live municipal OT.
+
+### Candidate record families
+
+| Domain | Preservation targets | Recovery validation |
+|---|---|---|
+| Traffic management | Approved timing-plan archives, intersection/cabinet inventory, controller/firmware compatibility, diagrams, change authorization, vendor export formats | Offline parsing/schema comparison and approved test-bench reconstruction; no live signal changes |
+| Water/wastewater | Authorized PLC/HMI configuration exports, process documentation, historian records, hardware/firmware dependency manifest | Offline checks and test-lab validation with utility engineers; never write to production control |
+| Public works | GIS layers, asset inventories, work orders, fleet maintenance histories, permits | Restore a sample application and compare known-answer records |
+| Municipal facilities | Building-system configurations, inspection histories, vendor manuals | Reconstruct a documented read-only management/reporting environment |
+| Community archives | Historical media, document indexes, catalog metadata, scanning workflows | Verify fixity, metadata, file readability and access dependencies |
+| Emergency administration | Non-operational procedural documents, inventory, contact trees, records schedules | Offline document retrieval and controlled revision verification |
+
+**Important distinction:** The toolchain or ability to interpret a record can be as important as the record itself. Versioned software/runtime dependencies and vendor formats may need preservation, subject to contractual licensing and security restrictions.
+
+### Service boundary and safety model
+
+1. **No unapproved production network access.** Use municipality-approved exports or designated read-only interfaces and segregated transfer paths.
+2. **No autonomous restoration into live OT.** Restoring traffic-signal or utility-controller state must be supervised and authorized by qualified municipal/vendor personnel.
+3. **No invented safety assurance.** Restoring bytes or passing a parser test is not proof that a controller is safe to operate.
+4. **Respect records law and contracts.** Classification, retention schedules, public-records obligations, sensitive infrastructure details and vendor licensing must be determined before acquisition.
+5. **Separate public research from customer archives.** Public Git stores schemas, generic methods and anonymized results; customer configurations, topology, credentials and protected records stay private.
+6. **Preserve approved change lineage.** Capture source, capture time, approved revision, device/firmware applicability and later corrections.
+7. **Use offline isolated restore testing.** Never exercise destructive or remote-control scenarios against live public infrastructure in routine weekly tests.
+
+### Tiered offering hypothesis
+
+**Tier 1 — Heritage Vault:** Preservation and integrity checking of historical and unusual records, including format readability and metadata.
+
+**Tier 2 — Configuration Assurance:** Regular versioned backups of critical configuration/asset records, with drift reports and evidence of authorized changes.
+
+**Tier 3 — Recovery Assurance:** Scheduled isolated reconstitution tests of software, structured data and compatible sandboxed configurations, with technician-approved runbooks.
+
+**Tier 4 — Municipal Continuity Partnership:** Agreed recovery exercises, independent storage locations, periodic audits and escalation support. Any real OT restoration remains under the municipality's authorized operational procedures.
+
+No price points or promised recovery targets are established yet. Procurement, liability, cyber-insurance, support staffing and specialist/vendor roles need investigation.
+
+### Weekly “OH SHIT” evidence contract
+
+For each authorized dataset or application, capture:
+
+- Source system and owner; approved export mechanism.
+- File/object hashes, timestamps, source version, software/firmware compatibility.
+- Backup lineage and independent copy status.
+- Selected restoration point and isolated test-environment ID.
+- Actual restore result, known-answer checks, missing dependencies and observed time.
+- Responsible reviewer, signoff and retention/next-test policy.
+- Explicit **not tested** or **cannot validate** statuses when appropriate.
+
+A green backup-job indicator is not the product; a documented restoration is.
+
+### Concrete first demonstration: fictional intersection records
+
+Build a **fully synthetic** traffic-management archive with three revisions of an illustrative, non-operational signal plan, device inventory, vendor-format placeholder and signed change log. Inject a corrupted archive, missing dependency and unauthorized revision in separate offline tests.
+
+Have a fresh technician identify the latest authorized recoverable revision, explain why one candidate is invalid, verify integrity and generate a recovery evidence report. Do not produce deployable live traffic-control settings or attempt controller commands.
+
+A second demonstration can use an old, fictional municipal permit database restored with its application dependency environment, proving the generalizable pattern without access to infrastructure controls.
+
+### Why this niche could matter
+
+The market hypothesis is that **small but indispensable records** are poorly served by generalized cloud-backup marketing. DERP Continuity would compete on evidence quality, preservation of interpretation tools, and measured recovery—not on storage price alone.
+
+This hypothesis needs stakeholder interviews, a records inventory, procurement/legal review and a supervised pilot before making commercial claims.
+
+### External guidance grounding (accessed November 24, 2026)
+
+- NIST, [SP 800-82 Rev. 3 — Guide to Operational Technology Security](https://csrc.nist.gov/pubs/sp/800/82/r3/final): OT recovery and backups must account for safety, reliability and availability.
+- FHWA, [Traffic Signal Timing Manual, Chapter 8](https://ops.fhwa.dot.gov/publications/fhwahop08024/chapter8.htm): maintain current signal configuration/timing data as operation changes.
+- FHWA, [Transportation Management Center IT Security, Chapter 9](https://ops-dr.fhwa.dot.gov/publications/fhwahop19059/chap9.htm): backup and recovery planning for transportation-management information, with frequency appropriate to record type.
+- CISA, [Cross-Sector Cybersecurity Performance Goals](https://www.cisa.gov/cross-sector-cybersecurity-performance-goals): outcome-oriented practices for IT and OT resilience.
+
+**Working name:** DERP Municipal Continuity — *Preserve the State. Verify the Recovery. Leave Control to the Operators.*
