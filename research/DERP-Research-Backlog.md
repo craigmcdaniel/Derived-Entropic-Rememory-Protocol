@@ -804,3 +804,15 @@ See "C:\Users\mcfuc\AppData\Local\Temp\ng-1wvHxJ\angular-errors.log" for further
 **Caution:** The current Angular dev proxy matches `/gomoneypb.**`; actual ConnectRPC requests need browser network verification for path and responses. A login page rendering alone does not establish that API calls work. Do not assert successful initial user creation or authenticated access until confirmed.
 
 **Next:** Check whether page says `Register to continue` vs `Sign in to continue`. If register, user creates app administrator credentials in browser; no password supplied in chat/Git. If login API fails, capture status/URL and refine proxy. Later move from dev server to intentional H:-based production/frontend hosting.
+
+## 2026-11-24 — Go Money login renders but Register option absent
+
+**User observation (verbatim):** “nope just login, and can't rewire to /register”
+
+**Confirmed code-level behavior, Go Money upstream v1.8.0:** `frontend/src/app.routes.ts` routes to `login` but has no `register` route. `frontend/src/app/modules/auth/login/login.component.ts` initially sets `isRegisterFlow=false`, then calls `ConfigurationService.getConfiguration({})` and updates the flag from `val.shouldCreateAdmin`. Registration uses `UsersService.create` on the same login page; the Sign In/Register button is conditional. `frontend/src/app/consts/demo.ts` enables demo mode when `localStorage.getItem('is_demo') === 'true'` or hostname `gomoney.ft-t.dev`; demo mode bypasses registration logic and forces normal sign-in. Previous PostgreSQL estimated `users=0` suggests initial administrator still needed but did not prove current exact user count.
+
+**Working diagnosis:** Login view renders, but configuration API may be inaccessible through local Angular proxy `/gomoneypb.**`, or browser `is_demo` flag could force login. Neither cause verified yet. No direct database user insertion or manual Angular source edits recommended.
+
+**Next diagnostic on INFINITY:** POST JSON `{}` to `http://127.0.0.1:52055/gomoneypb.configuration.v1.ConfigurationService/GetConfiguration` and the corresponding `http://127.0.0.1:4200/...` proxy route. Compare HTTP code and response body (especially `shouldCreateAdmin`), then check local browser demo flag if backend/proxy agree. Do not disclose JWTs/passwords. Preserve actual results.
+
+**Status:** Frontend rendering confirmed; registration/authentication blocked; diagnostic pending.
