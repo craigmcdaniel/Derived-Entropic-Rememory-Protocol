@@ -1145,3 +1145,15 @@ User supplied replacement private archive `bank(1).zip`. Compared against origin
 - Prior user's request to avoid repeated copy/paste and host switching remains the operating principle; eventual ingestion should become single-step and verify the database count before declaring success.
 
 **Status:** PRIVATE TRANSACTION STAGING PACKAGE RECONCILED AND READY FOR CONTROLLED IMPORT; NOT DEPLOYED.
+
+## 2026-11-24 — DERPBooks bank staging deployed to THOTH and Grafana
+
+**Evidence:** User pasted the end of the single-block INFINITY PowerShell/THOTH SSH deployment log. The remote Bash runner reached its final completion message, Grafana HTTP `/api/health` returned `{"database":"ok","version":"13.2.3",...}`, SSH completed successfully, and PowerShell reported `=== DERPBOOKS BANK PIPELINE SUCCEEDED ===`.
+
+**Deployed workflow:** Private seven-statement bank import SQL was copied from INFINITY staging location to THOTH, executed as PostgreSQL owner into `money.derpbooks.bank_transaction_staging`, then the script's **hard-coded verification gate** checked 233 rows, 7 distinct statements, credit/debit/fee aggregates matching the prior offline extraction, and only upon passing changed the existing Grafana `derpbooks-overview` dashboard to add six bank reporting panels. The script reported `=== IMPORT AND DASHBOARD UPDATE COMPLETE ===`, backup `/home/thoth/derpbooks/bank-dashboard-20261124-112835.json`, and `Go Money ledger: unchanged`. This supports successful import/verification path execution, although the complete detailed row-count printout was not included in the pasted tail.
+
+**Current architecture:** Original bank PDFs remain private; normalized transactions now staged in THOTH `derpbooks.bank_transaction_staging`; Grafana reads through `money_report` reporting datasource `derpbooks_pg`; Go Money remains the separate accounting system, with no bank ledger entries created by this deployment.
+
+**Next checks:** User refresh/screenshot to verify six bank panels visibly populate and date range includes Apr–Nov 2026; inspect any Grafana panel query errors; correlate bank deposits with historical paystub net amounts using date/description/amount while preserving ambiguities; design controlled idempotent Go Money import only after successful reconciliation. Do not add private financial transaction details or bank statements to this public repo.
+
+**Status:** THOTH BANK STAGING DEPLOYMENT COMPLETED; AUTOMATED VERIFICATION GATE PASSED; GRAFANA DISPLAY AWAITING VISUAL CONFIRMATION.
