@@ -964,3 +964,30 @@ curl: (7) Failed to connect to 127.0.0.1 port 3000 after 0 ms: Could not connect
 **Next read-only audit:** `systemctl status grafana-server --no-pager`; `journalctl -u grafana-server -n 100 --no-pager`; `ss -lntp` for TCP 3000; inspect provisioning-related error lines; curl `127.0.0.1:3000/api/health` once. If Grafana failed due to DERPBooks config, move only new DERPBooks provisioning files to a quarantine folder, then start Grafana and review logs. Preserve all exact outputs.
 
 **Status:** Files written, but application readiness NOT VERIFIED; follow-up diagnosis required.
+
+## 2026-11-24 09:24 EST — DERPBooks Grafana provisioning recovered and dashboard confirmed
+
+**User statement:** “it made the dsh board”
+
+**Source evidence:** User-uploaded THOTH post-provision diagnostic transcript. Important lines:
+```text
+grafana-server.service Active: active (running) since Tue 2026-11-24 09:23:26 EST
+Main PID: 29904 (grafana)
+LISTEN *:3000 users:(("grafana",pid=29904,...))
+Nov 24 09:23:38 ... logger=provisioning.datasources ... msg="inserting datasource from configuration" name=DERPBooks uid=derpbooks_pg
+Nov 24 09:23:39 ... logger=provisioning.dashboard ... msg="starting to provision dashboards"
+Nov 24 09:23:39 ... logger=provisioning.dashboard ... msg="finished to provision dashboards"
+Nov 24 09:23:39 ... logger=http.server ... msg="HTTP Server Listen" address=[::]:3000 protocol=http
+Nov 24 09:23:54 ... channel=grafana/dashboard/uid/derpbooks-overview
+=== HTTP HEALTH ===
+{"database":"ok","version":"13.2.3","commit":"90ffed056f0884267356c12a0eeb72a022af53f1"}
+HTTP 200
+```
+
+**Reconciliation:** Original inline provisioning script completed DB auth, wrote provisioning files and dashboard JSON, restarted Grafana, but its too-early `curl` health loop received connection refused. Follow-up diagnostic confirms Grafana finished initialization ~13 seconds after restart and accepted HTTP connections; the apparent failure was transient startup timing. The new datasource was inserted and dashboard provisioned; user observed dashboard exists. Existing THOTH Grafana dashboards were not intentionally modified; older dashboard `thoth-power-drilldown-v4` still logged as accessed.
+
+**Unverified:** Actual DERPBooks datasource SQL query results, dashboards' panel success, imported financial transactions (none confirmed). The dashboard is a custom starter, not an upstream official dashboard export.
+
+**Action:** No rollback or rerun. Next read-only check actual PostgreSQL datasource from Grafana dashboard or SQL query. Future shell automation should wait until HTTP `/api/health` responds, not merely `systemctl is-active`, with appropriate delay/timeouts.
+
+**Status:** Grafana service, datasource provisioning and dashboard creation confirmed; SQL panel data binding requires verification.
