@@ -428,3 +428,49 @@ ComputerName RemoteAddress RemotePort TcpTestSucceeded
 **Next read-only audit:** `sudo -u postgres psql` database/role inventory and `pg_hba_file_rules` (don't disclose passwords or private financial data). Choose specific `money` role and DB without disturbing existing applications; validate application connection settings before writing changes.
 
 **Status:** Network path CONFIRMED, database authentication/provisioning NOT YET VERIFIED.
+
+## 2026-11-24 — PostgreSQL database/role inventory and HBA blocker verified
+
+**Evidence:** User-pasted THOTH read-only PostgreSQL SQL query output (18-main).
+
+**Verbatim inventory:**
+```text
+=== DATABASES ===
+metasploit
+netbox
+postgres
+template0
+template1
+
+=== ROLES ===
+metasploit|t
+netbox|t
+postgres|t
+```
+
+**Verbatim pg_hba_file_rules output (columns abbreviated only in this note's heading):**
+```text
+ line_number | type  |   database    |  user_name   |   address   |  auth_method  | error
+-------------+-------+---------------+--------------+-------------+---------------+-------
+         118 | local | {all}         | {postgres}   |             | peer          |
+         123 | local | {all}         | {all}        |             | peer          |
+         125 | host  | {all}         | {all}        | 127.0.0.1   | scram-sha-256 |
+         127 | host  | {all}         | {all}        | ::1         | scram-sha-256 |
+         130 | local | {replication} | {all}        |             | peer          |
+         131 | host  | {replication} | {all}        | 127.0.0.1   | scram-sha-256 |
+         132 | host  | {replication} | {all}        | ::1         | scram-sha-256 |
+         133 | host  | {metasploit}  | {metasploit} | 192.168.4.0 | scram-sha-256 |
+(8 rows)
+```
+
+**Paths:**
+```text
+/etc/postgresql/18/main/postgresql.conf
+/etc/postgresql/18/main/pg_hba.conf
+```
+
+**Reconciliation:** No `money` database or role exists. The visible PostgreSQL HBA rules contain only loopback host auth and a remote Metasploit-specific entry; none would authorize a remote Go Money connection. Earlier `Test-NetConnection` from INFINITY succeeded at TCP level but does not bypass HBA nor prove database login. Preserve existing Metasploit/NetBox databases and roles untouched.
+
+**Next safe steps:** Verify INFINITY's actual IPv4 address used to reach THOTH and check upstream Go Money connection configuration. Subsequently create a least-privilege dedicated `money` role/database and narrow SCRAM HBA entry allowing only INFINITY's /32, with backed-up HBA, validate config and reload instead of restarting THOTH PostgreSQL. No changes have been made yet.
+
+**Status:** DB provisioning and HBA change proposed, not executed.
