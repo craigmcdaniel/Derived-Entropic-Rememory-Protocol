@@ -252,3 +252,59 @@ This document contains *concepts* and *historical claims* but no secretly plante
 **We are not leasing a laptop. We are delivering a replaceable doorway into a managed, recoverable working environment.**
 
 **DERP Continuity: Portable Points of Truth — Continuity as a Service.**
+
+---
+
+## Addendum A — Disconnected edge operations and reconciliation
+
+**Captured:** 2026-11-24  
+**Status:** Proposed design extension; no McDonald's integration, authorized POS access, offline payment capability, or deployed retail pilot is claimed.
+
+### Scenario and boundary conditions
+
+A retail restaurant loses electricity, local networking and/or WAN connectivity. Physical operations (kitchen equipment, refrigeration, power-dependent terminals and switches) may remain unavailable; VDI cannot make unpowered equipment function. A usable continuity design must account separately for portable/backup power and an alternate network path such as cellular uplink. Access to another operational location is a third fallback.
+
+Retail **back-office workflows**—scheduling, management reports, local inventory workflows—are more suitable for browser/VDI recovery. **Front-counter POS**, payment acceptance, kitchen coordination and time-sensitive operations may require vendor-approved local applications, bounded latency and offline transaction handling. A generic cloned database is not a replacement for a proprietary POS/payment service.
+
+### Proposed local shadow-store pattern
+
+```text
+        Central authoritative data / application
+                     ^            |
+              accepted deltas   versioned snapshot
+                     |            v
+               [sync/reconcile service]
+                        |
+                  local edge node
+            +-----------+-----------+
+            | scoped working replica |
+            | append-only outbox     |
+            | local app services     |
+            +-----------+-----------+
+                        |
+             leased endpoints / terminals
+```
+
+**Lifecycle:** (1) provision a scoped baseline snapshot and checkpoint; (2) permit only explicitly authorized offline actions; (3) journal every mutation as an immutable event with unique idempotency key, local sequence, origin, actor, schema version, timestamp and base revision; (4) on reconnection submit pending events and fetch authoritative changes; (5) validate, deduplicate, reconcile conflicts and record per-event acknowledgments; (6) advance checkpoints only after durable commit and read-back verification. Protect local data at rest and provide a retention/deletion policy after successful sync.
+
+The edge journal records **what the local site did**. It does not imply a central system has accepted the change. Maintain statuses such as `local_pending`, `submitted`, `accepted`, `conflicted`, and `rejected`. Preserve immutable evidence of failed or retried operations.
+
+### Failure cases to exercise
+
+| Failure | Expected policy |
+|---|---|
+| Split brain: concurrent edits upstream and offline | Version-aware merge or explicit review; never overwrite silently |
+| Network returns midway through batch | Idempotent retry with atomic checkpoint advancement |
+| Clock drift between edge and central | Don't use wall-clock ordering as sole consistency rule |
+| Schema/permissions changed while offline | Block incompatible replay pending migration or review |
+| Offline device stolen, damaged or exhausted | Protect journal, minimize local data and document unrecoverable unsynced changes |
+| Upstream sends corrupt/canceled data | Validate events and preserve prior checkpoints, don't blindly replicate |
+| Offline card payment attempted | Use only provider-approved offline capabilities, controls and reconciliation; no generic financial database replay |
+
+### Target pilot: network partition, then reconnect
+
+Use **synthetic orders and inventory data** on an isolated local service with no real payment integrations. Establish central baseline; disconnect WAN; create several new local transactions; concurrently edit an upstream record; reconnect; verify unique event acceptance, conflict detection, exact count/hash reconciliation, no duplicate postings after retry, and a complete DERP evidence trail. Repeat with a power interruption using protected storage.
+
+**Hypothesis:** A narrow, append-only edge working set plus explicit reconciliation can preserve selected business operations across temporary WAN failure. **Not yet proven** for any particular customer, POS platform, or outage scenario.
+
+**Architectural consequence:** Continuity now has a sixth optional, tightly scoped function: **disconnected edge execution and reconciliation**, spanning execution/data/evidence planes. This must remain separate from guaranteed failover and physical power continuity.
