@@ -294,3 +294,23 @@ A minimal vertical slice would be browser upload → PDF validation → hash and
 **Architecture consequence:** Keep format-specific `hnb_statement` and `lcc_payroll` transformers behind one Git-centric PDF ingestion interface; use original files as evidence, structured SQL as queryable meaning, and explicit staging/review of ambiguous fields. Native text and positional reconstruction precede any OCR fallback. Bank-statement layout should not be assumed to have PDF accessibility tags.
 
 **Status:** PDF inspection and summary arithmetic verified in analysis; no worker, SQL ingestion, cross-document matching, API endpoint or hosted application has been deployed. Await more specimens to check format stability and detailed transaction totals.
+
+## 2026-11-24 — DERPBooks: transaction fidelity, categories and extensible budgets
+
+**User decision (verbatim):** “yeah lets go that route, as its going to be extensible enough for me to be able to add budget entries and shit too”
+
+**Decision / confirmed requirement:** Preserve **every individual imported bank transaction**, including its original bank-provided description, while allowing separately normalized merchant identity, categorization and user-entered budget entries. DERPBooks must support budgeting as a first-class feature rather than treating it as another extracted statement.
+
+### Data model direction (design, not yet implemented)
+
+- **Source documents:** Private original PDFs with hashes, paths, import timestamps, document type and extraction/revision IDs.
+- **Statement + transaction facts:** Source-linked posted dates, statement periods, amounts, debit/credit direction, descriptions verbatim, transaction section and source page/location. Detect duplicates across overlapping statement imports using evidence rather than description alone.
+- **Classification layer:** Separate optional normalized merchant/payee, user-editable categories/tags, mapping rules and revisions. Keep raw imported transaction facts unchanged when categorization is corrected.
+- **Budgeting:** Distinct user-entered budget definitions/entries, applicable periods, categories and planned amounts. Budget items are **plans, not posted financial transactions**; compare budgeted versus actual only through explicit reporting/query logic.
+- **Payroll:** Preserve LCC pay-period statements, earnings, deductions and pay deposits independently; future reconciliation may associate approved payroll net pay to HNB deposits without double-counting the income.
+- **SQL operations:** Query transactions, grouped spend, category trends and budget-vs-actual; maintain controlled update paths for classifications and budgets. Every material correction should have provenance.
+- **Extensibility:** Source-specific PDF adapters feed a stable normalized model; new financial institutions or additional manual data types should not require rewriting historical transactions.
+
+**Status:** User-approved architectural direction only. Table schema, DB engine, API design, import worker and frontend are not yet built or selected.
+
+**Next inventory question:** Should initial budget entries be entered manually by month/category, or should recurring budget rules also be included from the first version?
