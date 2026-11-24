@@ -14,6 +14,8 @@ tags: [derp, continuity, disaster-recovery, zbook, vdi, guacamole, hybrid-cloud,
 
 > **The workstation is replaceable. The working environment is portable. The authoritative records survive both.**
 
+**Idea provenance and evolution:** [DERP Continuity Idea Lineage](../lineage/DERP-Continuity-Idea-Lineage.md).
+
 **Evidence status:** This is a proposed product architecture based on existing home-lab experience and brainstorming. It is not a deployed commercial service, audited SLA, independent security assessment, or market-tested pricing model.
 
 ## Executive summary
