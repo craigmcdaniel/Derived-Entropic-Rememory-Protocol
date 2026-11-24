@@ -314,3 +314,19 @@ A minimal vertical slice would be browser upload → PDF validation → hash and
 **Status:** User-approved architectural direction only. Table schema, DB engine, API design, import worker and frontend are not yet built or selected.
 
 **Next inventory question:** Should initial budget entries be entered manually by month/category, or should recurring budget rules also be included from the first version?
+
+## 2026-11-24 — DERPBooks selects Go Money for initial evaluation
+
+**User direction:** “ok lets pull in go money”
+
+**Decision:** Evaluate the upstream open-source [Go Money](https://github.com/ft-t/go-money) application as a candidate DERPBooks ledger/financial engine rather than implementing all financial accounting primitives from scratch.
+
+**Verified upstream capabilities from official source:** Multi-account double-entry accounting; transaction rules using Lua; PostgreSQL; backend/frontend Docker image; Grafana-friendly reporting; an MCP service including read-only SQL tools; and CSV/XLSX imports. The upstream documentation does **not** establish native parsing of the supplied LCC payroll or Huntington PDF formats; PDF ETL and provenance remain DERPBooks responsibilities.
+
+**Deployment constraint:** Upstream example Compose installs a separate PostgreSQL/Grafana/Traefik stack, potentially conflicting with THOTH services. Do not deploy its example unmodified on THOTH or assume it is installed. First clone and inspect the repository on INFINITY's H: volume; then select an isolated deployment and explicitly account for existing Grafana, ports, storage and data isolation.
+
+**Recommended working checkout:** `H:\DERPBooks\vendor\go-money` on INFINITY. This path is a proposed operator command destination, **not** a verified local clone. Upstream code remains separate from public DERP project records.
+
+**Next evidence required:** User output from Git clone, upstream commit, Compose files and local Docker availability. Only after these checks mark it deployed or integrated. Review AGPL-3.0 obligations before distributing a modified network service.
+
+**Status:** Upstream selected for evaluation. Local cloning/deployment not verified.
