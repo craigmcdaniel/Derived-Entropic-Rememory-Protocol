@@ -935,3 +935,32 @@ commit   : 90ffed056f0884267356c12a0eeb72a022af53f1
 **Next evidence:** User execution output (including datasource provisioning logs and dashboard rendering); if errors, inspect Grafana journal and roll back using timestamped backup. Later import upstream dashboard if its exact verified JSON file or ID is identified. No actual financial records imported yet.
 
 **Status:** Headless setup **prepared**, not deployed.
+
+## 2026-11-24 09:23 EST — DERPBooks Grafana provisioning files written, HTTP readiness failed
+
+**Source:** User-pasted THOTH terminal output after executing inline `sudo bash` Grafana provisioning block.
+
+**Verbatim decisive output:**
+```text
+=== DERPBOOKS GRAFANA PROVISIONING ===
+=== PREFLIGHT ===
+Reporting database authentication: OK
+=== BACKUP ===
+Backup: /home/thoth/derpbooks/grafana-backup-20261124-092325
+=== PROVISION DATASOURCE ===
+=== PROVISION DASHBOARD PROVIDER ===
+=== BUILD ACCOUNTING DASHBOARD ===
+Dashboard JSON created
+=== APPLY GRAFANA CONFIGURATION ===
+=== VERIFY HTTP ===
+curl: (7) Failed to connect to 127.0.0.1 port 3000 after 0 ms: Could not connect to server
+(repeated nine times)
+```
+
+**Observed:** Reporting database login succeeded; provisioned datasource at `/etc/grafana/provisioning/datasources/derpbooks.yaml`, provider at `/etc/grafana/provisioning/dashboards/derpbooks.yaml`, dashboard at `/var/lib/grafana/derpbooks-dashboards/derpbooks-overview.json`, and secret file at `/etc/grafana/derpbooks-secrets/reporting-password`. Local backup directory created as shown. `systemctl restart grafana-server` and immediate `systemctl is-active --quiet grafana-server` returned success initially, but the `curl --retry 8` health probe found port 3000 refusing connections.
+
+**Interpretation:** Grafana was not accepting localhost HTTP at the time of the probe. It may have subsequently started, failed during provisioning, or be bound differently; process status and journal evidence are not yet available. Avoid claiming Grafana is fully down or that the provisioned datasource/dashboard is active. Existing THOTH dashboards were not intentionally modified by script. Affected provision files are DERPBooks-specific; no changes to `money` ledger tables. **Do not rerun provisioning or restart other services blindly.**
+
+**Next read-only audit:** `systemctl status grafana-server --no-pager`; `journalctl -u grafana-server -n 100 --no-pager`; `ss -lntp` for TCP 3000; inspect provisioning-related error lines; curl `127.0.0.1:3000/api/health` once. If Grafana failed due to DERPBooks config, move only new DERPBooks provisioning files to a quarantine folder, then start Grafana and review logs. Preserve all exact outputs.
+
+**Status:** Files written, but application readiness NOT VERIFIED; follow-up diagnosis required.
