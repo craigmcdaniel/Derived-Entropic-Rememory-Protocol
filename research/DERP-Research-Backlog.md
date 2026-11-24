@@ -768,3 +768,27 @@ True
 **Next:** Add untracked H:-local Angular dev proxy config, run `npm start -- --host 127.0.0.1 --port 4200 --proxy-config <file>`, open `http://localhost:4200/`, validate login/api access against currently running native backend. Persist config deliberately in DERPBooks-owned integration layer, not by editing upstream vendor release. Do not publish credentials or data.
 
 **Status:** Dependencies verified; frontend not yet running.
+
+## 2026-11-24 — Go Money Angular build succeeds but proxy JSON fails at byte one
+
+**Evidence:** User-pasted INFINITY PowerShell output from `npm start -- --host 127.0.0.1 --port 4200 --proxy-config proxy.conf.json` in the Angular v1.8.0 frontend checkout `H:\DERPBooks\go-money\frontend`.
+
+**Verbatim decisive output:**
+```text
+Initial chunk files | Names         | Raw size
+main.js             | main          |  1.06 MB
+styles.css          | styles        | 80.37 kB
+polyfills.js         | polyfills     | 95 bytes
+Initial total                       | 1.14 MB
+Application bundle generation complete. [5.648 seconds] - 2026-11-24T14:06:53.979Z
+Watch mode enabled. Watching for file changes...
+An unhandled exception occurred: Proxy configuration file H:\DERPBooks\go-money\frontend\proxy.conf.json contains parse errors:
+[1, 1] InvalidSymbol
+See "C:\Users\mcfuc\AppData\Local\Temp\ng-1wvHxJ\angular-errors.log" for further details.
+```
+
+**Diagnosis:** Angular application compiled, but development server failed to start because the proxy JSON could not be parsed. Earlier script generated this JSON with Windows PowerShell 5.1 `Set-Content -Encoding UTF8`, which writes a UTF-8 BOM. A BOM at the first byte is a likely cause of `[1, 1] InvalidSymbol`; this has not yet been independently confirmed by inspecting raw bytes, so treat as highly plausible rather than definitive. User's browser connection-refused symptom follows from Angular not starting.
+
+**Remediation proposed:** Rewrite `proxy.conf.json` on H: using `[System.IO.File]::WriteAllText(path, json, (New-Object System.Text.UTF8Encoding($false)))`, then `ConvertFrom-Json` and rerun `npm start`. Test frontend loads and confirm API requests via DevTools. Keep backend and THOTH database unchanged.
+
+**Status:** Angular compilation CONFIRMED; frontend runtime blocked by invalid JSON until successful rerun.
