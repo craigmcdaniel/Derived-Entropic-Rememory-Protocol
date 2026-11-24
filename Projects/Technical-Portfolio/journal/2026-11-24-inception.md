@@ -52,3 +52,11 @@
 - **Status:** **Historical recollection, uncorroborated** until dates, original discussion, hardware changes, boot configuration and class post can be traced to source records. Do not assume this is the later INFINITY VHDX migration.
 - **Portfolio relevance:** Motivating problem → architecture investigation → implementation → knowledge sharing. Potential first-person systems-engineering case study once the archive corroborates details.
 - **Next:** Search original converted ChatGPT history for CHARON's early RAM/Blue Iris configuration, VMware Kali discussion, VHDX installation and class commentary. Attach source references and correct chronology without overwriting this recollection.
+
+### 2026-11-24 — TryHackMe learning-path clarification
+
+- **User's wording:** “Lol I had gotten through nmap in try hackme and just stopped doing it for a while there”
+- **Context:** Clarification offered while recounting CHARON's early evolution and the later Kali/VMware-to-server experiment.
+- **Historical recollection:** The TryHackMe learning path had reached Nmap before a period of inactivity. The length and exact placement of that pause relative to CHARON's hardware upgrade and VHDX installation are not yet verified.
+- **Status:** First-person recollection, pending archive reconciliation.
+- **Editorial rule:** Do not conflate completing the Nmap material with completing TryHackMe, or assert that the pause caused the CHARON redesign.
