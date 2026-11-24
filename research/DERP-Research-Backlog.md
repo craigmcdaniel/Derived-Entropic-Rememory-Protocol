@@ -342,3 +342,25 @@ A minimal vertical slice would be browser upload → PDF validation → hash and
 **Next step:** Start `E:\dls\go-money-server_1.8.0_windows_amd64\go-money-server.exe` inside PowerShell from its extracted directory and capture stdout/stderr plus exit code. Read the accompanying `README.md` for runtime options; do not assume DB or firewall error until actual output is collected. Do not claim installation at `H:` yet. User intends eventual installation/data on `H:`.
 
 **Status:** Extraction verified; startup not yet diagnosed; no installation, database provisioning, or service deployment verified. Preserve future command/output checkpoints and append to Git regularly.
+
+## 2026-11-24 08:20 EST — Go Money startup failure identified: PostgreSQL not reachable
+
+**Source:** User-copied native PowerShell 5.1 startup diagnostic output from INFINITY. This event time is explicitly present in the application log.
+
+**Command in use:** `& $Exe 2>&1` in PowerShell, from the v1.8.0 extracted Windows server directory at `E:\dls\go-money-server_1.8.0_windows_amd64`.
+
+**Verbatim decisive output:**
+```text
+2026/11/24 08:20:34 github.com/ft-t/go-money/pkg/boilerplate/gorm.go:20
+[error] failed to initialize database, got error failed to connect to `user=money database=money`:
+        [::1]:5432 (localhost): dial error: dial tcp [::1]:5432: connectex: No connection could be made because the target machine actively refused it.
+        127.0.0.1:5432 (localhost): dial error: dial tcp 127.0.0.1:5432: connectex: No connection could be made because the target machine actively refused it.
+```
+
+**Additional logged state:** JSON info message said `HTTP server started on port [52056]`; then `setup postgres database`; then fatal `failed to initialize database`. Process exit code `1`. The user's Windows Firewall permission dialog reappeared and was approved.
+
+**Interpretation:** Go Money server binary executes, but its attempted PostgreSQL connection at loopback IPv6/IPv4 port 5432 was refused. The HTTP listener log reflects a transient startup, **not** a running operational service. No evidence yet whether PostgreSQL is installed but stopped, absent, on a different port, or remote. Windows Firewall prompt is not evidence of the root failure; no need to change firewall rules at this step.
+
+**Next action:** Read-only local check for PostgreSQL services, processes, ports and executable locations on INFINITY; then configure or provision an isolated database on H: as suitable, keeping financial data off public GitHub. Do not assert PostgreSQL is installed or Go Money is deployed.
+
+**Status:** Root immediate blocking dependency verified: no PostgreSQL accepting localhost:5432 at application startup; database provisioning still pending.
