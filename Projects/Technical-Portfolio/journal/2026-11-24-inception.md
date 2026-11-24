@@ -77,3 +77,11 @@
 - **Status:** **Hypothesis / historical recollection**, pending original conversation dates and records of domain deployment.
 - **Interpretive possibility (not a recorded motive):** Centralized identity, naming, management and a more structured lab could have been benefits of a domain; do not assert these were the original reasons without evidence.
 - **Next:** Locate initial LAN-scan discussions and first domain-controller setup records; use dated evidence to test the order and motives.
+
+### 2026-11-24 — CHARON, THOTH and Grafana order: retrospective
+
+- **User's wording:** “and it snowballed from there. I think the server came before grafana, as thoth was built on charon”
+- **Recollection:** The infrastructure expanded organically following early LAN scanning and domain work. The user believes CHARON's server stage preceded the Grafana deployment and remembers THOTH being built on CHARON.
+- **Status:** **Historical recollection / tentative chronology**, not yet verified. “THOTH was built on CHARON” is preserved as stated; the exact VM, container, installation or migration relationship is unknown and must not be inferred.
+- **Working order to test:** CHARON server environment → THOTH built on CHARON → Grafana introduced. The order of domain deployment relative to those events remains unverified.
+- **Next:** Correlate archived conversation timestamps, THOTH installation/deployment records, hypervisor configuration and first Grafana/Prometheus setup. Distinguish the original THOTH from its later standalone Linux-host state.
