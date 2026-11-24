@@ -613,3 +613,26 @@ Exit code: 1
 **User clarification request:** Asked whether the command actually dropped a server. Answer: only started a temporary process listening on ops HTTP port 52056, then exited code 1; did not deploy a persistent Windows service. Server data/schema changes persist in THOTH PostgreSQL.
 
 **Status:** Database connected, startup blocked at optional MCP documentation; no persistent backend running.
+
+## 2026-11-24 08:39 EST — Go Money Windows backend starts successfully against THOTH
+
+**Source:** User-pasted INFINITY PowerShell stdout/stderr, from the retry with `MCP_DISABLE=true`, using Go Money v1.8.0 (`commit_sha=e423145`) native Windows server binary in `E:\dls\go-money-server_1.8.0_windows_amd64`. THOTH PostgreSQL `192.168.5.83:5432`, `money` database and role; database password obtained privately over SSH.
+
+**Verbatim startup evidence (log messages):**
+```text
+2026-11-24T08:39:25-05:00 setup postgres database
+2026-11-24T08:39:25-05:00 HTTP server started on port [52056]
+2026-11-24T08:39:25-05:00 ========= DB [192.168.5.83] [money] ============
+2026-11-24T08:39:25-05:00 [Db] start migrations
+2026-11-24T08:39:25-05:00 using jwt private key from database
+2026-11-24T08:39:25-05:00 job scheduler started
+2026-11-24T08:39:25-05:00 server started on port 52055
+2026-11-24T08:39:25-05:00 server grpc listening at 0.0.0.0:52055
+2026-11-24T08:39:25-05:00 daily gaps fixed successfully
+```
+
+**Reconciliation:** Go Money backend completed startup sequence without fatal errors in provided output. It reported gRPC server on 52055 and ops HTTP listener on 52056. Initial PowerShell `NativeCommandError` comes from invoking native stderr with `2>&1`, not proof of server failure. User reported “we up” and no termination or exit code was shown. Independent process and port probes still pending. The backend is foreground-only, not installed as persistent Windows service. The native Windows release contains backend only; end-user financial web frontend remains to be provisioned. MCP temporarily disabled; no need to reenable until docs are supplied.
+
+**Next:** From second INFINITY PowerShell session, verify process and TCP listeners; read `README.md` / upstream source for frontend build/deployment, then relocate to H: and plan service persistence. Preserve secrets outside Git.
+
+**Status:** Application backend started successfully (log-confirmed), operational probe pending.
