@@ -96,3 +96,12 @@
 - **Chronology note:** The initial Blue Iris + NeoLink baseline and later Server 2025 adaptation are distinct phases; their relationship to the earlier VMware/Kali and VHDX experiment needs reconciliation rather than forced ordering.
 - **Portfolio angle:** Demonstrates hardware/OS compatibility troubleshooting and deliberate trade-offs when running a server OS on workstation hardware.
 - **Next:** Find the earliest Blue Iris/NeoLink references and archived ZBook driver/test-signing diagnostics; distinguish a successful installation from any remaining Bluetooth or sound issues.
+
+### 2026-11-24 — Grafana origins: Nest and smart-plug hypothesis
+
+- **User's wording:** “I think it might have been nest, then we figured out the google fee, and said, smart plugs.”
+- **Context:** In response to the question of which Grafana dashboard came first, the assistant proposed a HORUS bare-metal dashboard without establishing original creation dates. The user recalled an earlier Nest integration and a subsequent shift toward smart plugs after learning about a Google fee.
+- **Working hypothesis:** Nest-related monitoring/integration → discovery of a Google-related cost or fee → pivot toward smart-plug monitoring. Whether each stage produced a Grafana dashboard, and the order relative to HORUS, are **not verified**.
+- **Correction:** Retract the assumption that HORUS was the first Grafana dashboard. Preserve it as a candidate, not a confirmed first.
+- **Status:** Historical first-person recollection / tentative chronology. Specific Google service, fee amount, dates, smart-plug brands, and earliest dashboard title are unknown.
+- **Next:** Inspect early ChatGPT/Obsidian archive entries and Grafana dashboard creation metadata for Nest, Google integration costs, smart plugs and HORUS. Establish first *attempt*, first *functioning datasource*, and first *dashboard* separately.
