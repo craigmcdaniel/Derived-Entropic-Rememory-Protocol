@@ -132,3 +132,11 @@
 - **User's subsequent note:** “our dashboard dashboard is getting busy” — observation about increasing dashboard index complexity, **not** a request to change the architecture during this digression.
 - **Status:** Maintenance completed per user's confirmation; early Grafana chronology remains historical recollection pending archive records.
 - **Next:** Return to the weather-app-to-Grafana period and identify the earliest creation timestamps/evidence.
+
+### 2026-11-24 — Grafana visual evidence requested
+
+- **User's direction:** “sien we will have a grafana section eventially, if fits. Ad this to documentations” (image attached in this conversation).
+- **Decision:** Reserve this visual evidence for the eventual Grafana/observability portfolio section alongside the documented cleanup. Do not conflate the screenshot with the historical first Grafana dashboard.
+- **Current evidence:** A user-shared image was supplied in this conversation, but its binary asset was not accessible to the repository-writing integration at this checkpoint. The image itself has **not** been published into GitHub; this entry is a provenance placeholder, not a claim of image preservation.
+- **Related maintenance record:** [THOTH provisioned-dashboard cleanup](../case-studies/2026-11-24-thoth-grafana-dashboard-cleanup.md), containing the original command/terminal transcript.
+- **Next:** Export or provide the screenshot as a file available for an actual image commit, review it for public-safe content and link it from the future Grafana case study. Keep the archive chronology as the main thread.
