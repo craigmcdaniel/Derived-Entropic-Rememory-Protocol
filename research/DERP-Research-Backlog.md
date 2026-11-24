@@ -1076,3 +1076,19 @@ The user reported that the 2026 bulk payroll import **worked** and that historic
 - Append evidence and preserve prior checkpoints rather than rewriting history. Distinguish confirmed, inferred, and proposed states.
 
 **Status:** WORKING HISTORICAL PAYROLL INGESTION + DASHBOARD; FIRST DESIGN-REVIEW ISSUES RECORDED.
+
+## 2026-11-24 — DERPBooks bank statement PDF acquisition preflight
+
+**Source:** The user uploaded a private `bank.zip` archive containing six Huntington bank-statement PDFs. The PDFs are text-extractable, not CSV/OFX/QFX. User's private financial source documents and itemized transactions were **not** committed to this public repository.
+
+**Preflight verified:**
+- Six PDFs; six distinct SHA-256 document hashes, no exact file duplicates.
+- Coverage consists of 2026-04-21 through 2026-05-12, and a continuous run from 2026-06-11 through 2026-11-12.
+- **Missing statement-period interval:** 2026-05-13 through 2026-06-10. Must not treat available statements as a continuous account ledger until missing interval is obtained or explicitly accounted for.
+- All six statement summary arithmetic checks pass: beginning balance + credits - debits - fees = ending balance.
+- Native PDF text is readable with PyMuPDF; content includes a bank-defined statement summary and categorized transaction sections.
+- Private local output `DERPBooks-bank-preflight-2026.zip` created with README, per-document SHA-256/period/summary-reconciliation CSV inventory and manifest. This is a **preflight**, not a transaction extraction/import.
+
+**Next work:** Parse complete transaction rows across pages and sections, preserve source-document/page and signs, reconcile the sum of parsed activity against each statement's reported credits/debits/fees, stage with stable de-duplication identities, reconcile payroll deposits with paystub net amounts, then import into Go Money's accounting ledger via its API, not direct SQL writes. Avoid duplicate deposits and avoid treating absent statement coverage as zero activity.
+
+**Status:** SIX BANK PDFs ACCEPTED, FILE/STATEMENT PRECHECK PASSED; TRANSACTION-LEVEL INGESTION PENDING.
