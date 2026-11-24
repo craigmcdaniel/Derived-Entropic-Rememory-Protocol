@@ -233,3 +233,17 @@ A minimal vertical slice would be browser upload → PDF validation → hash and
 **Architecture invariant:** DERPBooks remains Git-native from inception, with a dedicated SQL operations layer and financial PDFs kept outside the public source repo. The API can later be reused by VERN and other permitted clients.
 
 **Open design choice:** For the first prototype, HTML upload only versus HTML upload plus watched folder. No UI hosting endpoint or deployment target selected.
+
+## 2026-11-24 — DERPBooks: extraction and transformation are mandatory
+
+**User's wording:** “well I think it has to be extracted and transformed to be useful from the raw pdf”
+
+**Decision:** Regardless of whether the intake adapter is an HTML form/API or an inbox folder, the first usable DERPBooks vertical slice **must convert PDF content into structured, validated financial data**, not merely store uploaded files.
+
+**Required flow:** Receive PDF → preserve original and hash → extract embedded text/tables (OCR only if required) → transform document-specific labels and layouts into typed normalized earnings, deductions, taxes, dates and current/YTD amounts → validate totals and flag uncertain mappings → load accepted records into the dedicated SQL layer with document provenance → expose queries, reports and future Grafana consumption.
+
+**Provenance requirements:** Link every parsed value to source document and extraction/revision; retain raw extractions, transformation rules, validation outcomes and correction history. Preserve failed/ambiguous records for review, not silently force them into a ledger.
+
+**Status:** Design requirement, not implemented. Parser support, schema, review workflow and API contract remain unselected. The HTML upload vs watched-folder question is secondary to this shared ingestion pipeline.
+
+**Next inventory interview topic:** What should count as an accepted transformation—automatic mapping only when reconciled, or a human review gate for the first paycheck documents?
