@@ -216,3 +216,20 @@ Earlier brainstorming distinguished a **SQLite document index** from a **Postgre
 The project is **not** a “check stub parser first, maybe add a database later.” A minimal initial vertical slice already includes inbox → document preservation → extraction → SQL indexing/records → outbox/reconciliation, all inside a Git-native application lifecycle.
 
 **Next inventory question:** What should the outbox mean operationally—processed documents, reports for review, or both? Keep this open until the user defines the desired handoff.
+
+## 2026-11-24 — DERPBooks alternative intake: HTML upload via API
+
+**User's wording:** “or we could just have an upload mechanism on a html page edxposed via api”
+
+**Status:** Proposed alternative to filesystem drop-folder intake; no deployment or selection confirmed.
+
+The inbox/outbox requirement is **logical**, not necessarily a watched directory. Candidate intake front ends:
+
+- A simple HTML form uploads a PDF to an application HTTP endpoint.
+- A filesystem inbox can optionally feed the **same** ingestion service later; do not build duplicate extraction logic.
+
+A minimal vertical slice would be browser upload → PDF validation → hash and original-file preservation → extraction → SQL records plus source linkage → reviewable result/outbox. Track extraction status and errors, but do not assume fields are correct until reconciled.
+
+**Architecture invariant:** DERPBooks remains Git-native from inception, with a dedicated SQL operations layer and financial PDFs kept outside the public source repo. The API can later be reused by VERN and other permitted clients.
+
+**Open design choice:** For the first prototype, HTML upload only versus HTML upload plus watched folder. No UI hosting endpoint or deployment target selected.
