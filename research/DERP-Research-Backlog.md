@@ -880,3 +880,13 @@ commit   : 90ffed056f0884267356c12a0eeb72a022af53f1
 **Next:** When Go Money backend is deliberately restarted, add `GRAFANA_CONFIG_URL=http://192.168.5.83:3000` alongside already working DB settings and `MCP_DISABLE=true` to remove warning from native frontend. Separately configure a least-privilege read-only Grafana PostgreSQL role and datasource to `money` on THOTH. Preserve finances and credentials outside public repo. Current Go Money backend is a foreground process; changing environment in a different PowerShell session will not affect it until restart.
 
 **Status:** Grafana reachability VERIFIED; Go Money UI URL integration and financial datasource NOT YET CONFIGURED.
+
+## 2026-11-24 — Go Money Navigate to Grafana link confirmed functional
+
+**User observation:** “navigate to grafana works just fine. im t th edsh board landing page”
+
+**Confirmed:** From Go Money's authenticated frontend on INFINITY, the `Navigate to grafana` control successfully opens the preexisting THOTH Grafana landing page. Prior PowerShell health endpoint response confirmed Grafana v13.2.3 at `http://192.168.5.83:3000`. The Go Money backend's `GRAFANA_CONFIG_URL` is evidently set to a usable destination, but the exact successful backend restart output was not pasted; distinguish observed navigation success from uninspected process environment.
+
+**Still outstanding:** Grafana financial PostgreSQL datasource, dashboard(s) and transaction ETL. Go Money's link working does not imply Grafana can query the `money` database. We have zero verified imported financial transactions. Next action: create a dedicated least-privilege read-only `money_report` PostgreSQL role on THOTH (SELECT only reporting-safe finance tables/views, not users, JWT/system configuration or tokens), configure PostgreSQL datasource in existing Grafana, use dashboard/API read tests.
+
+**Status:** Navigation verified; finance visualization data connection not yet verified.
