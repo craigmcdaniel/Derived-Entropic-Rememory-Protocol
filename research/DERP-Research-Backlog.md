@@ -851,3 +851,15 @@ HTTP: 404
 **Next priorities:** Establish stable H:-based deployment/launcher and frontend/API proxy beyond development shell; then configure existing THOTH Grafana with restricted read-only finance datasource and dashboards; add automated PDF ingestion for LCC payroll and Huntington statements. Do not require manual transaction transcription. No financial transaction imports yet verified; protect source PDFs and credentials outside public repository.
 
 **Status:** UI access OPERATOR-CONFIRMED. Persistence, financial dashboards and ETL pending.
+
+## 2026-11-24 — Go Money dashboard screenshot exposes missing Grafana URL
+
+**User evidence:** Screenshot of the real Angular Go Money v1.8.0 UI on INFINITY after successful registration/access. Left navigation includes Dashboard, Deposits, Expenses, Transfers, All; page displays a Grafana integration warning and a "Navigate to grafana" action.
+
+**Exact UI warning:** `Grafana url is not set. Please set it using env variable - GRAFANA_CONFIG_URL. For more details refer to official documentation.`
+
+**Confirmed:** Authenticated frontend/dashboard renders, beyond merely showing login. Go Money's financial dashboard relies on external Grafana integration. The source config `pkg/configuration/types.go` defines `GrafanaConfig.Url` under prefix `GRAFANA_CONFIG_`, matching environment variable `GRAFANA_CONFIG_URL`. This setting hasn't yet been applied to the running INFINITY backend. Grafana already exists on THOTH but its exact current user-facing browser URL/port and its Go Money datasource privileges are unverified.
+
+**Next:** Determine working THOTH Grafana URL on LAN, then supply `GRAFANA_CONFIG_URL` when launching Go Money backend on INFINITY. Restarting backend will interrupt the current foreground session and require existing DB/MCP variables; avoid changing until launch environment is preserved. Independently provision a read-only PostgreSQL reporting role/datasource and deploy initial Grafana finance dashboards; URL configuration alone doesn't produce reports.
+
+**State:** Frontend authenticated and functioning; Grafana integration banner visible; reporting not configured.
