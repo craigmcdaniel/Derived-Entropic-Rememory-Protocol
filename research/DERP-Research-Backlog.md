@@ -1178,3 +1178,27 @@ User supplied replacement private archive `bank(1).zip`. Compared against origin
 5. Preserve original observed output and code/commit provenance; file an implementation fix in the weather repository only after testing. Do not silently overwrite evidence.
 
 **Classification:** Confirmed nonzero shutdown result; cause **probable/unverified**; fix **proposed/not implemented**. **Status:** OPEN — release-readiness blocker pending graceful shutdown verification and installer test.
+
+
+## 2026-11-25 — DERPBooks Go Money startup recovery on INFINITY
+
+**Origin:** User-supplied Windows PowerShell 5.1 Go Money startup logs and browser screenshots, followed by owner confirmation: "great, recovered." This is an operational recovery note, not a ledger change.
+
+### Observed failure and diagnosis
+- Angular frontend at \`H:\DERPBooks\go-money\frontend\` launched successfully via \`npm start -- --host 127.0.0.1 --port 4200 --proxy-config proxy.conf.json\`; Vite proxied \`/gomoneypb.configuration.v1.ConfigurationService/GetConfiguration\` to \`127.0.0.1:52055\` and received \`ECONNREFUSED\` while the backend was not listening.
+- Go Money v1.8.0 binary at \`E:\dls\go-money-server_1.8.0_windows_amd64\go-money-server.exe\` started its operations listener on port \`52056\` but failed database initialization: default \`localhost:5432\` was refused. No relevant database environment variables were set in that PowerShell session.
+- \`Test-NetConnection 192.168.5.83 -Port 5432\` returned \`TcpTestSucceeded=True\`: THOTH PostgreSQL was reachable.
+- Setting \`DB_HOST=192.168.5.83\`, \`DB_PORT=5432\`, \`DB_DB=money\`, \`DB_USER=money\`, and an empty \`DB_PASSWORD\` produced PostgreSQL SQLSTATE \`28P01\` (password authentication failed). This did **not** establish that a different database username was needed.
+- The existing database credential was recovered from a private THOTH-side file (credential contents are intentionally excluded from this public note). The working configuration also used \`DB_SSL_MODE=disable\` and \`MCP_DISABLE=true\`.
+- After the backend/database connection was recovered, the frontend displayed \`Grafana url is not set ... GRAFANA_CONFIG_URL\`. \`Test-NetConnection 192.168.5.83 -Port 3000\` succeeded. Setting \`GRAFANA_CONFIG_URL=http://192.168.5.83:3000\` in the **same backend PowerShell environment**, then restarting the backend, restored the Grafana integration. The owner confirmed recovery.
+
+### Recovered architecture
+- INFINITY: Angular frontend \`127.0.0.1:4200\`, Go Money backend/API \`52055\`, operations endpoint \`52056\`.
+- THOTH: PostgreSQL \`192.168.5.83:5432\` (\`money\` database / application role \`money\`); Grafana \`192.168.5.83:3000\`.
+- \`money_report\` is for Grafana reporting, not the Go Money application's database login.
+- Bank transaction staging remains separated from the Go Money accounting ledger; no transaction import, account modification, schema reset, or password change was performed during recovery.
+
+### Follow-up
+- Preserve a reproducible backend launch method that loads the *existing* secret from its private location without embedding the password in Git; use the verified environment variables above, including \`GRAFANA_CONFIG_URL\`.
+- Keep backend and Angular frontend launches distinct. Validate API availability after backend startup rather than assuming frontend compilation proves backend health.
+- **Classification:** Startup failure and network/auth diagnostic outputs confirmed from owner logs; functional application + Grafana integration recovered per owner report and screenshot. **Status: RECOVERED; persistent startup automation not yet established.**
