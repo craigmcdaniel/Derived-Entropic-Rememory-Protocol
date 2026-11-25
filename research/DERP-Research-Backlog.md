@@ -1157,3 +1157,24 @@ User supplied replacement private archive `bank(1).zip`. Compared against origin
 **Next checks:** User refresh/screenshot to verify six bank panels visibly populate and date range includes Apr–Nov 2026; inspect any Grafana panel query errors; correlate bank deposits with historical paystub net amounts using date/description/amount while preserving ambiguities; design controlled idempotent Go Money import only after successful reconciliation. Do not add private financial transaction details or bank statements to this public repo.
 
 **Status:** THOTH BANK STAGING DEPLOYMENT COMPLETED; AUTOMATED VERIFICATION GATE PASSED; GRAFANA DISPLAY AWAITING VISUAL CONFIRMATION.
+
+## 2026-11-25 — THOTH Weather collector exits 137 on Docker Desktop Stop
+
+**Origin:** User-requested backlog entry after owner-observed manual Docker Compose test on INFINITY (Windows PowerShell 5.1 / Docker Desktop). Project source: [craigmcdaniel/weather](https://github.com/craigmcdaniel/weather); working checkout `H:\git\weather`. This was a development Compose deployment with `WEATHER_STATION=KLAN`, **not** a clean run of the packaged ZIP-driven `.run` installer.
+
+### Observed evidence
+- `thoth-weather-grafana` exited **0** and `thoth-weather-prometheus` exited **0** after stopping the project in Docker Desktop.
+- `thoth-weather` exited **137**, `OOMKilled=false`, `RestartCount=0`, with Docker `FinishedAt=2026-11-25T00:24:34.608771462Z`. Collector logs were empty; this is not proof of a specific signal sequence.
+- Container `StopSignal` and `StopTimeout` were unset (Docker defaults); image command was `["python3","/app/weather-exporter.py"]`, with no explicit entrypoint.
+- Existing exporter source uses `ThreadingHTTPServer(...).serve_forever()` with no explicit SIGTERM lifecycle handler. **Hypothesis, not yet verified:** Docker's graceful stop did not terminate the Python process within its timeout, causing SIGKILL (exit 137).
+- All three Docker named volumes (`weather_grafana-data`, `weather_prometheus-data`, `weather_weather-cache`), Compose network, and the `thoth-weather:0.1` image remained intact after shutdown.
+- Before shutdown, collector `/health` returned success, Prometheus target `http://thoth-weather:9190/metrics` reported `up`, and `weather_exporter_up{station="KLAN"}` queried as `1`. Dashboard values appeared after manual scrape job name was changed from `thoth-weather` to the installer-expected `weather`. The repo's starter `prometheus.yml` is deliberately empty; `install.sh` generates the scrape job. Do not misclassify the manually omitted installer step as a confirmed upstream naming defect.
+
+### Backlog action / acceptance
+1. Add graceful termination handling for the Python HTTP server on SIGTERM (and SIGINT as applicable). Respect that `shutdown()` must be invoked from a different thread than `serve_forever()`; close the listening socket and flush/cache as necessary.
+2. Rebuild the weather image, run the Compose stack, and stop via both `docker stop` and Docker Desktop's Stop operation. Capture command timestamps, container state, `OOMKilled`, exit codes, and relevant logs. **Pass:** collector exits `0` without a forced kill, and all three services shut down normally.
+3. Restart without deleting volumes, verify cached weather data and Prometheus history persist, and repeat after a cold start.
+4. Separately test the documented `.run` appliance build/install path with ZIP-code resolution and generated Prometheus/Grafana configuration. The manual Compose test does **not** establish packaged-installer correctness.
+5. Preserve original observed output and code/commit provenance; file an implementation fix in the weather repository only after testing. Do not silently overwrite evidence.
+
+**Classification:** Confirmed nonzero shutdown result; cause **probable/unverified**; fix **proposed/not implemented**. **Status:** OPEN — release-readiness blocker pending graceful shutdown verification and installer test.
